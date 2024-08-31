@@ -89,3 +89,14 @@
         }
     }
 }
+
+ .selected{
+            background-color: lighten($primary, 50%);
+            border-color    : $primary;
+             .mantine-List-itemLabel {
+                svg {
+                    visibility: visible;
+                }
+            }
+        
+ }

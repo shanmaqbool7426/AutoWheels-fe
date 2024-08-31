@@ -17,6 +17,17 @@ import { BsArrowRight, BsSearch } from 'react-icons/bs';
 
 const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) => {
   const [opened, { open, close }] = useDisclosure(isOpen);
+
+
+  useEffect(() => {
+    if (isOpen) open();
+    else close();
+  }, [isOpen, open, close]);
+
+  useEffect(() => {
+    console.log('Current Selection:', selection);
+  }, [selection]);
+
   const handleSelection = (type, value) => {
     setSelection(prev => {
       const updatedSelection = { ...prev, [type]: value };
@@ -40,18 +51,67 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
     });
   };
 
-  useEffect(() => {
-    if (isOpen) open();
-    else close();
-  }, [isOpen, open, close]);
+ const makes = [
+  'Toyota',
+  'Honda',
+  'BMW',
+  'Kia',
+  'Ford',
+  'Chevrolet'
+]; // Example makes
 
-  useEffect(() => {
-    console.log('Current Selection:', selection);
-  }, [selection]);
+const models = {
+  Toyota: ['Corolla', 'Camry', 'Yaris', 'Highlander', 'RAV4'],
+  Honda: ['Civic', 'Accord', 'CR-V', 'Fit', 'Pilot'],
+  BMW: ['320i', 'X5', 'M3', 'X3', 'Z4'],
+  Kia: ['Sportage', 'Soul', 'Forte', 'Seltos', 'K5'],
+  Ford: ['Mustang', 'F-150', 'Escape', 'Explorer', 'Fusion'],
+  Chevrolet: ['Malibu', 'Silverado', 'Equinox', 'Cruze', 'Traverse'],
+};
 
-
-
-
+const variants = {
+  Corolla: [
+    'Hybrid WxB 1797cc, Automatic, Hybrid',
+    '2014 - 2024 Altis Grande X CVT-i 1.8 Beige Interior',
+    '2022 - 2023 SE 2.0L CVT',
+  ],
+  Camry: [
+    '2022 - 2023 SE 2.5L',
+    '2022 - 2023 XSE V6',
+    '2021 - 2022 XLE Hybrid',
+  ],
+  Civic: [
+    '2022 - 2023 LX 2.0L',
+    '2022 - 2023 Sport 1.5T',
+    '2021 - 2022 EX-L 2.0L',
+  ],
+  Accord: [
+    '2022 - 2023 EX 1.5T',
+    '2022 - 2023 Touring Hybrid',
+    '2021 - 2022 Sport 2.0T',
+  ],
+  '320i': [
+    '2022 - 2023 Sedan 2.0L',
+    '2021 - 2022 xDrive 2.0L',
+    '2021 - 2022 M Sport',
+  ],
+  'X5': [
+    '2022 - 2023 xDrive40i',
+    '2022 - 2023 xDrive50i',
+    '2021 - 2022 M50i',
+  ],
+  'Mustang': [
+    '2022 - 2023 GT 5.0L',
+    '2022 - 2023 EcoBoost 2.3L',
+    '2021 - 2022 Mach 1',
+  ],
+  'F-150': [
+    '2022 - 2023 Lariat 2.7L V6',
+    '2022 - 2023 King Ranch 5.0L V8',
+    '2021 - 2022 Raptor 3.5L V6',
+  ],
+  // Add more models and variants as needed
+};
 
 
   return (
