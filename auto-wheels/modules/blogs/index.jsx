@@ -24,7 +24,7 @@ const BlogModule = async ({ params }) => {
   const filteredCategories = data?.categories?.filter(category => category.slug !== 'news') || [];
 
   return (
-    <Box component="section" className="blog-page py-5">
+    <Box component="section" className="blog-page" pt={60}>
       {/* Feature Grid Section */}
       {isBlogsPage && (
         <Box className="container">

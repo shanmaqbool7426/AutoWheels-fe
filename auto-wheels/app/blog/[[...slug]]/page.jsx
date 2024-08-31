@@ -1,10 +1,9 @@
-import BlogModule from "@/modules/blogs"; 
+import BlogModule from "@/modules/blogs";
 
-
-export default function Blog({params,searchParams}) {
+export default function Blog({ params, searchParams }) {
   return (
     <>
-      <BlogModule params={params} searchParams={searchParams}/>
+      <BlogModule params={params} searchParams={searchParams} />
     </>
   );
 }
