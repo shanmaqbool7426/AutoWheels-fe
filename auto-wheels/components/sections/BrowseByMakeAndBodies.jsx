@@ -2,9 +2,10 @@ import { Anchor, Flex, Text, Title } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import NextImage from "next/image";
 
 const BrowseByMakeAndBodies = ({ makes, bodies }) => {
-  console.log("BrowseByCategory >>>>>>>", bodies);
+  console.log("BrowseByCategory", bodies);
   return (
     <div className="browse-cats-section py-5 bg-light">
       <div className="container">
@@ -29,6 +30,7 @@ const BrowseByMakeAndBodies = ({ makes, bodies }) => {
                     <div className="col-sm-3" key={index}>
                       <Flex direction="column" className="single-brand-item">
                         <Image
+                         component={NextImage}
                           width={100}
                           height={100}
                           src={item.companyImage}
