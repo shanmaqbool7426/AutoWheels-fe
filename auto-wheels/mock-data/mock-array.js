@@ -50,7 +50,7 @@
 
 
   export    const registrationOptions = [
-    { value: 'unregistered', label: 'Un-Registered' },
+    { value: 'Registered', label: 'Un-Registered' },
     { value: 'punjab', label: 'Punjab' },
     { value: 'sindh', label: 'Sindh' },
     { value: 'karachi', label: 'Karachi' }
