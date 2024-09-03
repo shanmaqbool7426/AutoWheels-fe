@@ -40,7 +40,7 @@ import ProductCard from "@/components/ui/ProductCard";
 const BlogModule = () => {
   return (
     <>
-      <Box component="section" className="blog-page py-5">
+      <Box component="section" className="blog-page" pt={60}>
         <Box className="container">
           <Box className="row ">
             <Box className="col-md-6">
