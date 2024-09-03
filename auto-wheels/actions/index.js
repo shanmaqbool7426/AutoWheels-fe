@@ -48,3 +48,15 @@ export const fetchBrowseBlogsServer = async (type) => {
     };
   }
 };
+export const fetchVideoDataServer = async (params) => {
+  try {
+    const videos = await await fetchAPI(`${API_ENDPOINTS.BROWSE_VIDEOS}${params?.slug?`?slug=${params?.slug}`:''}${params?.search?`?search=${params?.search}`:''}`);
+    console.log(videos,'hsdjdfhsjfhjsdhfjsdhf');
+    return videos?.data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    return {
+      videos: [],
+    };
+  }
+};
