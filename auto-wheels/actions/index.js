@@ -15,24 +15,32 @@ export const fetchMakesByTypeServer = async (type) => {
 };
 
 
-export const postDataToServer = async (data) => {
+export const postDataToServer = async (formData) => {
+  console.log("🚀 ~ postDataToServer ~ formData:", formData);
+
+  // Create options for the fetch request
+  const options = {
+    method: 'POST',
+    body: formData, // No need to set Content-Type header, FormData handles it
+  };
+
   try {
-    const response = await fetchAPI(API_ENDPOINTS.VEHICLE_DETAIL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    // Perform the fetch request
+    const response = await fetchAPI(API_ENDPOINTS.VEHICLE_DETAIL, options);
+
+    // Return the response data
+    console.log("🚀 ~ postDataToServer ~ response data:", response);
     return response;
   } catch (error) {
-    console.error("Error posting data:", error);
+    // Log and handle errors
+    console.error("🚀 ~ postDataToServer ~ error:", error);
     return {
       success: false,
       message: 'Failed to post data',
     };
   }
 };
+
 
 
 
