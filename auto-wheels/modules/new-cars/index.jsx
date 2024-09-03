@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Anchor,
   Box,
@@ -16,6 +16,7 @@ import {
   Rating,
   rem,
   Grid,
+  
   Tabs,
 } from "@mantine/core";
 import {
@@ -37,9 +38,10 @@ import { Carousel } from "@mantine/carousel";
 import { useDisclosure } from "@mantine/hooks";
 
 import BrowseByMakeAndBodies from "@/components/sections/BrowseByMakeAndBodies"
+import ListingFilter from "@/components/listing/sidebar-filter";
 
-const NewCarsModule = ({makes,bodies,popularVehicles, fetchUpComingVehicles,fetchToyotaVehicles,fetchHondaVehicles}) => {
-console.log('New Cars',fetchToyotaVehicles?.data)
+const NewCarsModule = ({ makes, bodies, popularVehicles, fetchUpComingVehicles, fetchToyotaVehicles, fetchHondaVehicles, fetchMakesByTypeData, params, searchParams }) => {
+  console.log('New Cars', fetchToyotaVehicles?.data)
 
   // const [opened, { open, close }] = useDisclosure(false);
 
@@ -56,6 +58,8 @@ console.log('New Cars',fetchToyotaVehicles?.data)
   return (
     <>
       <section className="find-cars">
+
+    
         <Box className="background-search-verlay" mb="100">
           <div className="container">
             <div className="row">
@@ -118,7 +122,7 @@ console.log('New Cars',fetchToyotaVehicles?.data)
                 </Group>
               </div>
               <div className="col-md-12">
-              <SearchBar/>
+              <SearchBar fetchMakesByTypeData={fetchMakesByTypeData}/>
               </div>
             </div>
           </div>

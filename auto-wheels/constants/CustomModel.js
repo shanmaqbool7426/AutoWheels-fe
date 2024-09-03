@@ -15,68 +15,20 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { BsArrowRight, BsSearch } from 'react-icons/bs';
 
-const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) => {
-  const makes = [
-    'Toyota',
-    'Honda',
-    'BMW',
-    'Kia',
-    'Ford',
-    'Chevrolet'
-  ]; // Example makes
+const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetchMakesByTypeData ,hide= false }) => {
+  const makes = [];
+  const models = {};
+  const variants = {};
   
-  const models = {
-    Toyota: ['Corolla', 'Camry', 'Yaris', 'Highlander', 'RAV4'],
-    Honda: ['Civic', 'Accord', 'CR-V', 'Fit', 'Pilot'],
-    BMW: ['320i', 'X5', 'M3', 'X3', 'Z4'],
-    Kia: ['Sportage', 'Soul', 'Forte', 'Seltos', 'K5'],
-    Ford: ['Mustang', 'F-150', 'Escape', 'Explorer', 'Fusion'],
-    Chevrolet: ['Malibu', 'Silverado', 'Equinox', 'Cruze', 'Traverse'],
-  };
+  fetchMakesByTypeData.data.forEach((make) => {
+    makes.push(make.name);
+    models[make.name] = [];
+    make.models.forEach((model) => {
+      models[make.name].push(model.name);
+      variants[model.name] = model.variants;
+    });
+  });
   
-  const variants = {
-    Corolla: [
-      'Hybrid WxB 1797cc, Automatic, Hybrid',
-      '2014 - 2024 Altis Grande X CVT-i 1.8 Beige Interior',
-      '2022 - 2023 SE 2.0L CVT',
-    ],
-    Camry: [
-      '2022 - 2023 SE 2.5L',
-      '2022 - 2023 XSE V6',
-      '2021 - 2022 XLE Hybrid',
-    ],
-    Civic: [
-      '2022 - 2023 LX 2.0L',
-      '2022 - 2023 Sport 1.5T',
-      '2021 - 2022 EX-L 2.0L',
-    ],
-    Accord: [
-      '2022 - 2023 EX 1.5T',
-      '2022 - 2023 Touring Hybrid',
-      '2021 - 2022 Sport 2.0T',
-    ],
-    '320i': [
-      '2022 - 2023 Sedan 2.0L',
-      '2021 - 2022 xDrive 2.0L',
-      '2021 - 2022 M Sport',
-    ],
-    'X5': [
-      '2022 - 2023 xDrive40i',
-      '2022 - 2023 xDrive50i',
-      '2021 - 2022 M50i',
-    ],
-    'Mustang': [
-      '2022 - 2023 GT 5.0L',
-      '2022 - 2023 EcoBoost 2.3L',
-      '2021 - 2022 Mach 1',
-    ],
-    'F-150': [
-      '2022 - 2023 Lariat 2.7L V6',
-      '2022 - 2023 King Ranch 5.0L V8',
-      '2021 - 2022 Raptor 3.5L V6',
-    ],
-    // Add more models and variants as needed
-  };
   const [opened, { open, close }] = useDisclosure(isOpen);
   const handleSelection = (type, value) => {
     setSelection(prev => {
@@ -91,10 +43,12 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
       }
 
       if (type === 'model') {
+        closeModal()
         return {
           ...updatedSelection,
           variant: '',  // Reset variant
         };
+
       }
 
       return updatedSelection;
@@ -109,11 +63,6 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
   useEffect(() => {
     console.log('Current Selection:', selection);
   }, [selection]);
-
-
-
-
-
 
   return (
     <Box>
@@ -159,26 +108,29 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
             >
               Model
             </Button>
-            <Button
-              className={`tab-button ${selection.model ? 'active' : ''}`}
-              variant="subtle"
-              bg="#F3F3F3"
-              color="#878787"
-              size="xs"
-              mr="md"
-              autoContrast
-              onClick={() => {
-                if (selection.variant) {
-                  setSelection(prev => ({ ...prev, variant: '' }));
-                }
-              }}
-            >
-              Variants
-            </Button>
+            {!hide && ( // Conditionally render Variants tab button
+              <Button
+                className={`tab-button ${selection.model ? 'active' : ''}`}
+                variant="subtle"
+                bg="#F3F3F3"
+                color="#878787"
+                size="xs"
+                mr="md"
+                autoContrast
+                onClick={() => {
+                  if (selection.variant) {
+                    setSelection(prev => ({ ...prev, variant: '' }));
+                  }
+                }}
+              >
+                Variants
+              </Button>
+            )}
           </Center>
         </Paper>
         <Grid gutter={0}>
-          <Grid.Col span={4} p="md" pt="xl" className="border-end">
+          <Grid.Col span={hide ? 6 : 4} p="md" pt="xl" className="border-end">
+            {/* Make Section */}
             <Input
               placeholder="Search by Car Make"
               leftSection={<BsSearch />}
@@ -207,7 +159,8 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
               </List>
             </ScrollArea>
           </Grid.Col>
-          <Grid.Col span={4} p="md" pt="xl" className="border-end">
+          <Grid.Col span={hide ? 6 : 4} p="md" pt="xl" className="border-end">
+            {/* Model Section */}
             <Input
               placeholder="Search by Car Model"
               leftSection={<BsSearch />}
@@ -235,44 +188,48 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
               </List>
             </ScrollArea>
           </Grid.Col>
-          <Grid.Col span={4} p="md" pt="xl" className="border-end">
-            <Input
-              placeholder="Search by Car Variant"
-              leftSection={<BsSearch />}
-            />
-            <Title order={5} my="sm" fw={600}>
-              Variants
-            </Title>
-            <ScrollArea
-              offsetScrollbars
-              scrollbarSize={5}
-              scrollHideDelay={500}
-              scrollbars="y"
-            >
-              <List className="search-dropdown-lists" listStyleType="none">
-                {selection.model && variants[selection.model]?.map(variant => (
-                  <List.Item
-                    key={variant}
-                    className={`search-dropdown-lists__item ${selection.variant === variant ? 'selected' : ''}`}
-                    onClick={() => handleSelection('variant', variant)}
-                  >
-                    {variant} <BsArrowRight />
-                  </List.Item>
-                ))}
-              </List>
-            </ScrollArea>
-          </Grid.Col>
+          {!hide && (  // Conditionally render Variants column
+            <Grid.Col span={4} p="md" pt="xl" className="border-end">
+              <Input
+                placeholder="Search by Car Variant"
+                leftSection={<BsSearch />}
+              />
+              <Title order={5} my="sm" fw={600}>
+                Variants
+              </Title>
+              <ScrollArea
+                offsetScrollbars
+                scrollbarSize={5}
+                scrollHideDelay={500}
+                scrollbars="y"
+              >
+                <List className="search-dropdown-lists" listStyleType="none">
+                  {selection.model && variants[selection.model]?.map(variant => (
+                    <List.Item
+                      key={variant}
+                      className={`search-dropdown-lists__item ${selection.variant === variant ? 'selected' : ''}`}
+                      onClick={() => handleSelection('variant', variant)}
+                    >
+                      {variant} <BsArrowRight />
+                    </List.Item>
+                  ))}
+                </List>
+              </ScrollArea>
+            </Grid.Col>
+          )}
         </Grid>
-        <Box className='text-center mb-2' >
-            <Button   className={`tab-button ${!selection.model && !selection.variant ? 'active' : ''}`}
-              color="#E90808"
-              size="xs"
-              mr="md"
-              onClick={closeModal}>Done</Button>
+        <Box className='text-center mb-2'>
+          <Button
+            className={`tab-button ${!selection.model && !selection.variant ? 'active' : ''}`}
+            color="#E90808"
+            size="xs"
+            mr="md"
+            onClick={closeModal}
+          >
+            Done
+          </Button>
         </Box>
       </Modal>
-
-   
     </Box>
   );
 };
