@@ -4,7 +4,7 @@
     .video-thumbnail {
         position       : relative;
         text-decoration: none;
-
+        cursor         : pointer;
         .play-button {
             top : calc(calc(376px / 2) - 25px);
             left: calc(calc(636px / 2) - 25px)

@@ -88,3 +88,71 @@ export const formatToMonthYear=(dateString)=> {
   const options = { year: 'numeric', month: 'long' };
   return date.toLocaleDateString('en-US', options);
 }
+
+
+// utils/filterUtils.js
+
+export const updateFiltersInUrl = (updatedFilters, type, searchParams,router) => {
+  console.log(' ',type  )
+  let customUrl = `/listing/${type}/search/-/`;
+  Object.entries(updatedFilters).forEach(([key, value]) => {
+    if (Array.isArray(value) && value.length > 0) {
+      if (key === "make") [...new Set(value)].forEach(make => customUrl += `mk_${make.toLowerCase()}/`);
+      if (key === "model") [...new Set(value)].forEach(model => customUrl += `md_${model.toLowerCase()}/`);
+      if (key === "city") [...new Set(value)].forEach(city => customUrl += `ct_${city.toLowerCase()}/`);
+      if (key === "bodyType") [...new Set(value)].forEach(bodyType => customUrl += `bt_${bodyType.toLowerCase()}/`);
+      if (key === "price" && (value[0] !== 0 || value[1] !== 2000000000)) {
+        customUrl += `pr_${value[0]}_${value[1]}/`;
+      }
+      if (key === "year" && (value[0] !== 2000 || value[1] !== 2024)) {
+        customUrl += `yr_${value[0]}_${value[1]}/`;
+      }
+      if (key === "mileage" && (value[0] !== 0 || value[1] !== 2000000)) {
+        customUrl += `ml_${value[0]}_${value[1]}/`;
+      }
+    } else if (typeof value === "string" && value) {
+      if (key === "query") customUrl += `q_${value}/`;
+      if (["condition", "transmission", "drive", "exteriorColor", "fuelType"].includes(key)) {
+        customUrl += `${value}/`;
+      }
+      if (key === "view") customUrl += `view_${value}/`;
+    } else if (typeof value === "number") {
+      if (key === "page") customUrl += `page_${value}/`;
+    }
+  });
+  const queryString = searchParams.toString();
+  console.log('>>>>>',customUrl)
+  router.push(queryString ? `${customUrl}?${queryString}` : customUrl, { scroll: false });
+};
+
+export const updateFilters = (prevFilters, type,filterName, value, isChecked, debounceTimeoutRef,searchParams,router) => {
+  let updatedFilterValue;
+
+  if (["make", "city", "model", "bodyType"].includes(filterName)) {
+    const encodedValue = encodeURIComponent(value);
+    if (isChecked) {
+      updatedFilterValue = Array.from(new Set([...prevFilters[filterName], encodedValue]));
+    } else {
+      updatedFilterValue = prevFilters[filterName].filter(item => item !== encodedValue);
+    }
+  } else {
+    updatedFilterValue = value;
+  }
+
+  const updatedFilters = {
+    ...prevFilters,
+    [filterName]: updatedFilterValue,
+  };
+
+  // if (debounceTimeoutRef.current) {
+  //   clearTimeout(debounceTimeoutRef.current);
+  // }
+
+  // debounceTimeoutRef.current = setTimeout(() => {
+
+    console.log('updatedFilters',updatedFilters)
+    updateFiltersInUrl(updatedFilters,type, searchParams, router);
+  // }, 600);
+
+  return updatedFilters;
+};

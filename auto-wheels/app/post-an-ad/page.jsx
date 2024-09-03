@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -39,19 +39,20 @@ import { HiDocumentAdd } from "react-icons/hi";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {cities ,colorOptions,registrationOptions,suburbs,carTags} from "@/mock-data/mock-array"
 import CustomModel from "@/constants/CustomModel"
+import {postDataToServer} from "@/actions/index"
 // import { cities } from "@/constants/vehicle-constants"; 
 
 
 const PostAnAd = () => {
   const [activeStep, setActiveStep] = useState(0);
-    const [files, setFiles] = useState([]);
+    const [images, setImages] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selection, setSelection] = useState({
     make: '',
     model: '',
     variant: '',
   });
-    const [formData, setFormData] = useState({
+    const [formDataStep1, setFormDataStep1] = useState({
     condition: '',
     city: '',
     suburb: '',
@@ -61,40 +62,240 @@ const PostAnAd = () => {
     milage:"",
     price:"",
     description:"",
+    carInfo:{},
+    images:[]
+
   });
+  const [formDataStep2, setFormDataStep2] = useState({
+    engineType: '',
+    engineCapacity: '',
+    transmission: '',
+    assembly: '',
+    features: [],
+  });
+
+  const [formDataStep3, setFormDataStep3] = useState({
+    mobileNumber: '',
+    secondaryNumber: '',
+    allowWhatsAppContact:false,
+  });
+
+
+
+  const validateStep = (step) => {
+    const formData = {
+      0: formDataStep1,
+      1: formDataStep2,
+      2: formDataStep3
+    }[step];
+    
+    const validators = {
+      0: (data) => (
+        data.condition &&
+        data.city &&
+        data.suburb &&
+        data.registeredIn &&
+        data.rego &&
+        data.exteriorColor &&
+        data.milage &&
+        data.price &&
+        data.description && 
+        images.length>0
+      ),
+      1: (data) => (
+        data.engineType &&
+        data.engineCapacity &&
+        data.transmission &&
+        data.assembly &&
+        data.features.length > 0
+      ),
+      2: (data) => (
+        data.mobileNumber && 
+        /^[\d]{10,15}$/.test(data.mobileNumber) && 
+         data.secondaryNumber && 
+        /^[\d]{10,15}$/.test(data.mobileNumber) && 
+        data.allowWhatsAppContact
+
+        // Example validation for mobile number format
+      ),
+    };
+
+    return validators[step] ? validators[step](formData) : false;
+  };
+
+
+  useEffect(() => {
+
+    setFormDataStep1(prev => ({
+      ...prev,
+      carInfo: selection
+    }));
+
+  }, [selection]);  
+   
+
+
 
   
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-    console.log("🚀 ~ PostAnAd ~ files:", files)
-
-  console.log("formData---",formData)
+ 
 
   
 
-    const handleChange = (value, field) => {
-    setFormData((prevData) => ({
+    const handleChangeStep1 = (value, field) => {
+    setFormDataStep1((prevData) => ({
       ...prevData,
       [field]: value
     }));
   };
-   const handleDescriptionClick = (template) => {
-    setFormData((prevData) => ({
+
+
+    const handleInputChangeStep2 = (field, value) => {
+    setFormDataStep2(prevState => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+    const handleChangeStep3 = (e) => {
+    const { name, value } = e.target;
+    setFormDataStep3((prevData) => ({
       ...prevData,
-      description: prevData.description + template
+      [name]: value,
     }));
   };
 
 
+  // Handle feature selection
+  const handleFeatureChange = (feature) => {
+    setFormDataStep2(prevState => ({
+      ...prevState,
+      features: prevState.features.includes(feature)
+        ? prevState.features.filter(f => f !== feature)
+        : [...prevState.features, feature],
+    }));
+  };
 
-  const nextStep = () =>
-    setActiveStep((current) => (current < 3 ? current + 1 : current));
-  const prevStep = () =>
-    setActiveStep((current) => (current > 0 ? current - 1 : current));
+     const handleDescriptionClick = (template) => {
+    setFormDataStep1((prevData) => ({
+      ...prevData,
+      description: prevData.description + template
+    }));
+  };
+  
+
+const handleSubmit = async () => {
+  const formData = new FormData();
+
+  // Define hardcoded values
+  const specifications = {
+    suburb: formDataStep1.suburb,
+    rego: formDataStep1.rego,
+    exteriorColor: formDataStep1.exteriorColor,
+    milage: formDataStep1.milage,
+    engineType: formDataStep2.engineType,
+    engineCapacity: formDataStep2.engineCapacity,
+    transmission: formDataStep2.transmission,
+    assembly: formDataStep2.assembly
+  };
+
+  const hardcodedFields = {
+    startPrice: 10000,   // Replace with your actual value
+    endPrice: 20000,     // Replace with your actual value
+    cityArea: 'Downtown', // Replace with your actual value
+    type: 'car',         // This should match the allowed enum values
+    year: new Date().getFullYear(), // Current year
+    make: 'Toyota',      // Replace with your actual value
+    model: 'Camry'       // Replace with your actual value
+  };
+
+  // Append text fields
+  Object.entries({ ...formDataStep1, ...formDataStep2, specifications }).forEach(([key, value]) => {
+    if (key === 'carInfo' && value) {
+      Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+        formData.append(`carInfo[${nestedKey}]`, nestedValue);
+      });
+    } else if (key === 'features' && Array.isArray(value)) {
+      formData.append('features', JSON.stringify(value)); // Append array as JSON string
+    } else if (key === 'specifications' && value) {
+      formData.append('specifications', JSON.stringify(value)); // Append object as JSON string
+    } else if (key !== 'images' && value !== undefined && value !== null && value !== '') {
+      formData.append(key, value);
+    }
+  });
+
+  // Append hardcoded fields
+  Object.entries(hardcodedFields).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
+
+  // Append contactInfo as a nested object
+  Object.entries(formDataStep3).forEach(([key, value]) => {
+    formData.append(`contactInfo[${key}]`, value);
+  });
+
+  // Append images
+  if (formDataStep1.images && formDataStep1.images.length > 0) {
+    formDataStep1.images.forEach(file => {
+      formData.append('images', file); // Append files to 'images'
+    });
+  }
+
+  // Log FormData entries for debugging
+  // console.log('FormData entries:');
+  // for (let [key, value] of formData.entries()) {
+  //   if (value instanceof File) {
+  //     console.log(`${key}: ${value.name}`);
+  //   } else {
+  //     console.log(`${key}: ${value}`);
+  //   }
+  // }
+
+  try {
+    const data = await postDataToServer(formData);
+    console.log("🚀 ~ handleSubmit ~ data:", data);
+  } catch (error) {
+    console.log("🚀 ~ handleSubmit ~ error:", error);
+  }
+};
 
 
-  const previews = files.map((file, index) => {
-    const imageUrl = URL.createObjectURL(file);
+
+
+
+
+
+
+
+ const nextStep = () => {
+    if (!validateStep(activeStep)) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    // Proceed to the next step
+    setActiveStep(prev => prev + 1);
+  };
+  // Handle previous step click
+  const prevStep = () => {
+    setActiveStep(prev => prev - 1);
+
+  };
+
+  const handleFileDrop = (images) => {
+    // Update the images state
+    setFormDataStep1(prev => ({
+      ...prev,
+      images: [...prev.images, ...images]
+    }));
+
+    setImages(images)
+
+
+  };
+
+  const previews = images.map((file, index) => {
+  const imageUrl = URL.createObjectURL(file);
     return (
       <Box className="uploaded-image-wrapper" pos="relative">
         <Image
@@ -248,9 +449,9 @@ const PostAnAd = () => {
                             <Select
             size="md"
             placeholder="New"
-            data={["New", "Used", "Refurbished"]}
-            value={formData.condition}
-               onChange={(value) => handleChange(value, 'condition')}
+            data={['used', 'new', 'certified']}
+            value={formDataStep1.condition}
+               onChange={(value) => handleChangeStep1(value, 'condition')}
            
           />
                           </Box>
@@ -267,8 +468,8 @@ const PostAnAd = () => {
             size="md"
             placeholder="City"
             data={cities}
-            value={formData.city}
-             onChange={(value) => handleChange(value, 'city')}
+            value={formDataStep1.city}
+             onChange={(value) => handleChangeStep1(value, 'city')}
      
           />
                           </Box>
@@ -293,8 +494,8 @@ const PostAnAd = () => {
                               size="md"
                               placeholder="Suburb"
                               data={suburbs}
-                              value={formData.suburb}
-                               onChange={(value) => handleChange(value, 'suburb')}
+                              value={formDataStep1.suburb}
+                               onChange={(value) => handleChangeStep1(value, 'suburb')}
                              
                             />
                           </Box>
@@ -306,11 +507,10 @@ const PostAnAd = () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7" onClick={openModal} >
-                        
-                            <Select
-                              size="md"
-                              placeholder="Car Info "
-                            />
+                          <Text className="border p-2 rounded" >
+                           {selection.make} , {selection.model} ,{selection.variant}
+                          </Text>
+                          
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -324,8 +524,8 @@ const PostAnAd = () => {
                               size="md"
                               placeholder="Registered In"
                               data={registrationOptions}
-                              value={formData.registeredIn}
-                               onChange={(value) => handleChange(value, 'registeredIn')}
+                              value={formDataStep1.registeredIn}
+                               onChange={(value) => handleChangeStep1(value, 'registeredIn')}
                              
                             />
                           </Box>
@@ -341,8 +541,8 @@ const PostAnAd = () => {
                               size="md"
                               placeholder="Rego"
                               data={registrationOptions}
-                                value={formData.rego}
-                              onChange={(value) => handleChange(value, 'rego')}
+                                value={formDataStep1.rego}
+                              onChange={(value) => handleChangeStep1(value, 'rego')}
                             />
                           </Box>
                         </Box>
@@ -357,8 +557,8 @@ const PostAnAd = () => {
                               size="md"
                               placeholder="Exterior Color"
                               data={colorOptions}
-                                value={formData.exteriorColor}
-                                onChange={(value) => handleChange(value, 'exteriorColor')}
+                                value={formDataStep1.exteriorColor}
+                                onChange={(value) => handleChangeStep1(value, 'exteriorColor')}
                               
                             />
                           </Box>
@@ -377,10 +577,10 @@ const PostAnAd = () => {
                                   KM
                                 </Text>
                               }
-                               type="number" 
+                         
                               size="md"
-                             value={formData.milage}
-                             onChange={(value) => handleChange(value.target.value, 'milage')}
+                             value={formDataStep1.milage}
+                             onChange={(value) => handleChangeStep1(value.target.value, 'milage')}
                            
                             />
                           </Box>
@@ -408,10 +608,10 @@ const PostAnAd = () => {
                                   PKR
                                 </Text>
                               }
-                             type="number" 
+                         
                               size="md"
-                               value={formData.price}
-                                onChange={(value) => handleChange(value.target.value, 'price')}
+                               value={formDataStep1.price}
+                                onChange={(value) => handleChangeStep1(value.target.value, 'price')}
                             />
                           </Box>
                           <Box className="col-md-3 text-start">
@@ -438,8 +638,8 @@ const PostAnAd = () => {
                               minRows={6}
                               maxRows={6}
                               fs={8}
-                              value={formData.description}
-                              onChange={(e) => handleChange(e.target.value,'description')}
+                              value={formDataStep1.description}
+                              onChange={(e) => handleChangeStep1(e.target.value,'description')}
                             />
                             <Group gap={0}>
                               <Text size="sm" c="dimmed" ml="auto">
@@ -489,7 +689,7 @@ const PostAnAd = () => {
                             {/* <ImageUploader /> */}
                             <Dropzone
                               accept={IMAGE_MIME_TYPE}
-                              onDrop={setFiles}
+                              onDrop={handleFileDrop}
                               p={0}
                             >
                               <Image
@@ -539,11 +739,13 @@ const PostAnAd = () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                            <Select
-                              size="md"
-                              placeholder="Petrol"
-                              data={["React", "Angular", "Vue", "Svelte"]}
-                            />
+                             <Select
+            size="md"
+            placeholder="Petrol"
+            data={["Petrol", "Diesel", "Electric", "Hybrid"]}
+            value={formDataStep2.engineType}
+            onChange={(value) => handleInputChangeStep2('engineType', value)}
+          />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -553,7 +755,12 @@ const PostAnAd = () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                            <NumberInput size="md" placeholder="1300" />
+                            <NumberInput
+            size="md"
+            placeholder="1300"
+            value={formDataStep2.engineCapacity}
+            onChange={(value) => handleInputChangeStep2('engineCapacity', value)}
+          />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -564,10 +771,12 @@ const PostAnAd = () => {
                           </Box>
                           <Box className="col-md-7">
                             <Select
-                              size="md"
-                              placeholder="Transmission"
-                              data={["React", "Angular", "Vue", "Svelte"]}
-                            />
+            size="md"
+            placeholder="Transmission"
+            data={["Automatic", "Manual", "CVT", "Semi-Automatic"]}
+            value={formDataStep2.transmission}
+            onChange={(value) => handleInputChangeStep2('transmission', value)}
+          />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -577,11 +786,13 @@ const PostAnAd = () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                            <Select
-                              size="md"
-                              placeholder="Local"
-                              data={["React", "Angular", "Vue", "Svelte"]}
-                            />
+                             <Select
+            size="md"
+            placeholder="Local"
+            data={["Local", "Imported"]}
+            value={formDataStep2.assembly}
+            onChange={(value) => handleInputChangeStep2('assembly', value)}
+          />
                           </Box>
                         </Box>
                         <Box className="row align-items-start" mb="xl">
@@ -591,43 +802,43 @@ const PostAnAd = () => {
                           <Box className="col-md-7">
                             <Box className="row">
                               <Box className="col-md-4">
-                                {featuredListsOne.map((item, index) => {
-                                  return (
-                                    <Checkbox
-                                      key={index}
-                                      color="#E90808"
-                                      label={item.name}
-                                      mb="sm"
-                                      size="sm"
-                                    />
-                                  );
-                                })}
+                            {featuredListsOne.map((item, index) => (
+                <Checkbox
+                  key={index}
+                  color="#E90808"
+                  label={item.name}
+                  mb="sm"
+                  size="sm"
+                  checked={formDataStep2.features.includes(item.name)}
+                  onChange={() => handleFeatureChange(item.name)}
+                />
+              ))}
                               </Box>
                               <Box className="col-md-4">
-                                {featuredListsTwo.map((item, index) => {
-                                  return (
-                                    <Checkbox
-                                      key={index}
-                                      color="#E90808"
-                                      label={item.name}
-                                      mb="sm"
-                                      size="sm"
-                                    />
-                                  );
-                                })}
+                                {featuredListsTwo.map((item, index) => (
+                <Checkbox
+                  key={index}
+                  color="#E90808"
+                  label={item.name}
+                  mb="sm"
+                  size="sm"
+                  checked={formDataStep2.features.includes(item.name)}
+                  onChange={() => handleFeatureChange(item.name)}
+                />
+              ))}
                               </Box>
                               <Box className="col-md-4">
-                                {featuredListsThree.map((item, index) => {
-                                  return (
-                                    <Checkbox
-                                      key={index}
-                                      color="#E90808"
-                                      label={item.name}
-                                      mb="sm"
-                                      size="sm"
-                                    />
-                                  );
-                                })}
+                                {featuredListsThree.map((item, index) => (
+                <Checkbox
+                  key={index}
+                  color="#E90808"
+                  label={item.name}
+                  mb="sm"
+                  size="sm"
+                  checked={formDataStep2.features.includes(item.name)}
+                  onChange={() => handleFeatureChange(item.name)}
+                />
+              ))}
                               </Box>
                             </Box>
                           </Box>
@@ -660,12 +871,15 @@ const PostAnAd = () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                            <Input
-                              type="number"
-                              size="md"
-                              placeholder="Mobile NumberPetrol"
-                              rightSection={<BiMobileAlt />}
-                            />
+                             <Input
+            type="number"
+            size="md"
+            name="mobileNumber"
+            placeholder="Mobile Number"
+            value={formDataStep3.mobileNumber}
+            onChange={handleChangeStep3}
+            rightSection={<BiMobileAlt />}
+          />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -675,12 +889,15 @@ const PostAnAd = () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                            <Input
-                              type="number"
-                              size="md"
-                              placeholder="Secondary Number (Optional)"
-                              rightSection={<BiMobileAlt />}
-                            />
+                           <Input
+            type="number"
+            size="md"
+            name="secondaryNumber"
+            placeholder="Secondary Number (Optional)"
+            value={formDataStep3.secondaryNumber}
+            onChange={handleChangeStep3}
+            rightSection={<BiMobileAlt />}
+          />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -712,7 +929,48 @@ const PostAnAd = () => {
                     </Title>
                   </Stepper.Completed>
                 </Stepper>
-                <Group
+
+ <Flex justify="space-between" mt="md">
+      {activeStep > 0 && (
+        <Button
+                      variant="light"
+                      fw={500}
+                      autoContrast
+                      leftSection={<FaArrowLeftLong />}
+                      size="lg"
+                      w={{ base: "100%", xs: rem(160) }}
+                      color="#878787"
+                      onClick={prevStep}
+                    >
+                      Back
+                    </Button>
+      )}
+      {activeStep < 2 ? (
+         <Button
+                    autoContrast
+                    fw={500}
+                    color="#E90808"
+                    size="lg"
+                    rightSection={<FaArrowRightLong />}
+                    w={{ base: "100%", xs: rem(160) }}
+                    onClick={nextStep}
+                  >
+                    Next
+                  </Button>
+      ) : (
+        <Button   autoContrast
+                    fw={500}
+                    color="#E90808"
+                    size="lg"
+                    rightSection={<FaArrowRightLong />}
+                    w={{ base: "100%", xs: rem(160) }}
+                 
+                     onClick={handleSubmit} variant="filled">
+          Submit
+        </Button>
+      )}
+    </Flex>
+                {/* <Group
                   justify={activeStep >= 1 ? "space-between" : "flex-end"}
                   mt="xl"
                 >
@@ -742,7 +1000,7 @@ const PostAnAd = () => {
                   >
                     Next
                   </Button>
-                </Group>
+                </Group> */}
               </Box>
             </Box>
           </Box>

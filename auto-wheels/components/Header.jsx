@@ -377,6 +377,9 @@ const Header = () => {
               <Link href="/blog" className="link">
                 <Center inline>Blog</Center>
               </Link>
+              <Link href="/videos" className="link">
+                <Center inline>Videos</Center>
+              </Link>
               {/* <Anchor component={Link} href="#" className="link">
               </Anchor> */}
             </Group>

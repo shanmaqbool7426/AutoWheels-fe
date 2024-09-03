@@ -15,7 +15,20 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { BsArrowRight, BsSearch } from 'react-icons/bs';
 
-const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) => {
+const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetchMakesByTypeData ,hide= false }) => {
+  const makes = [];
+  const models = {};
+  const variants = {};
+  
+  fetchMakesByTypeData.data.forEach((make) => {
+    makes.push(make.name);
+    models[make.name] = [];
+    make.models.forEach((model) => {
+      models[make.name].push(model.name);
+      variants[model.name] = model.variants;
+    });
+  });
+  
   const [opened, { open, close }] = useDisclosure(isOpen);
   const handleSelection = (type, value) => {
     setSelection(prev => {
@@ -30,10 +43,12 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
       }
 
       if (type === 'model') {
+        closeModal()
         return {
           ...updatedSelection,
           variant: '',  // Reset variant
         };
+
       }
 
       return updatedSelection;
@@ -48,11 +63,6 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
   useEffect(() => {
     console.log('Current Selection:', selection);
   }, [selection]);
-
-
-
-
-
 
   return (
     <Box>
@@ -98,26 +108,29 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
             >
               Model
             </Button>
-            <Button
-              className={`tab-button ${selection.model ? 'active' : ''}`}
-              variant="subtle"
-              bg="#F3F3F3"
-              color="#878787"
-              size="xs"
-              mr="md"
-              autoContrast
-              onClick={() => {
-                if (selection.variant) {
-                  setSelection(prev => ({ ...prev, variant: '' }));
-                }
-              }}
-            >
-              Variants
-            </Button>
+            {!hide && ( // Conditionally render Variants tab button
+              <Button
+                className={`tab-button ${selection.model ? 'active' : ''}`}
+                variant="subtle"
+                bg="#F3F3F3"
+                color="#878787"
+                size="xs"
+                mr="md"
+                autoContrast
+                onClick={() => {
+                  if (selection.variant) {
+                    setSelection(prev => ({ ...prev, variant: '' }));
+                  }
+                }}
+              >
+                Variants
+              </Button>
+            )}
           </Center>
         </Paper>
         <Grid gutter={0}>
-          <Grid.Col span={4} p="md" pt="xl" className="border-end">
+          <Grid.Col span={hide ? 6 : 4} p="md" pt="xl" className="border-end">
+            {/* Make Section */}
             <Input
               placeholder="Search by Car Make"
               leftSection={<BsSearch />}
@@ -146,7 +159,8 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
               </List>
             </ScrollArea>
           </Grid.Col>
-          <Grid.Col span={4} p="md" pt="xl" className="border-end">
+          <Grid.Col span={hide ? 6 : 4} p="md" pt="xl" className="border-end">
+            {/* Model Section */}
             <Input
               placeholder="Search by Car Model"
               leftSection={<BsSearch />}
@@ -174,44 +188,48 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection }) =>
               </List>
             </ScrollArea>
           </Grid.Col>
-          <Grid.Col span={4} p="md" pt="xl" className="border-end">
-            <Input
-              placeholder="Search by Car Variant"
-              leftSection={<BsSearch />}
-            />
-            <Title order={5} my="sm" fw={600}>
-              Variants
-            </Title>
-            <ScrollArea
-              offsetScrollbars
-              scrollbarSize={5}
-              scrollHideDelay={500}
-              scrollbars="y"
-            >
-              <List className="search-dropdown-lists" listStyleType="none">
-                {selection.model && variants[selection.model]?.map(variant => (
-                  <List.Item
-                    key={variant}
-                    className={`search-dropdown-lists__item ${selection.variant === variant ? 'selected' : ''}`}
-                    onClick={() => handleSelection('variant', variant)}
-                  >
-                    {variant} <BsArrowRight />
-                  </List.Item>
-                ))}
-              </List>
-            </ScrollArea>
-          </Grid.Col>
+          {!hide && (  // Conditionally render Variants column
+            <Grid.Col span={4} p="md" pt="xl" className="border-end">
+              <Input
+                placeholder="Search by Car Variant"
+                leftSection={<BsSearch />}
+              />
+              <Title order={5} my="sm" fw={600}>
+                Variants
+              </Title>
+              <ScrollArea
+                offsetScrollbars
+                scrollbarSize={5}
+                scrollHideDelay={500}
+                scrollbars="y"
+              >
+                <List className="search-dropdown-lists" listStyleType="none">
+                  {selection.model && variants[selection.model]?.map(variant => (
+                    <List.Item
+                      key={variant}
+                      className={`search-dropdown-lists__item ${selection.variant === variant ? 'selected' : ''}`}
+                      onClick={() => handleSelection('variant', variant)}
+                    >
+                      {variant} <BsArrowRight />
+                    </List.Item>
+                  ))}
+                </List>
+              </ScrollArea>
+            </Grid.Col>
+          )}
         </Grid>
-        <Box className='text-center mb-2' >
-            <Button   className={`tab-button ${!selection.model && !selection.variant ? 'active' : ''}`}
-              color="#E90808"
-              size="xs"
-              mr="md"
-              onClick={closeModal}>Done</Button>
+        <Box className='text-center mb-2'>
+          <Button
+            className={`tab-button ${!selection.model && !selection.variant ? 'active' : ''}`}
+            color="#E90808"
+            size="xs"
+            mr="md"
+            onClick={closeModal}
+          >
+            Done
+          </Button>
         </Box>
       </Modal>
-
-   
     </Box>
   );
 };

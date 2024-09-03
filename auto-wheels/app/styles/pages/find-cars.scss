@@ -3,6 +3,12 @@
     height          : 200px;
 }
 
+.background-bread-crumb-overlay {
+    background-color: rgba(233, 8, 8, 0.8);
+    padding: 1rem 0rem;
+    box-sizing: border-box;
+}
+
 .breadcrumb {
     .breadcrumb-item {
         a {
