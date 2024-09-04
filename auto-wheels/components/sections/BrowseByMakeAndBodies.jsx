@@ -30,9 +30,9 @@ const BrowseByMakeAndBodies = ({ makes, bodies }) => {
                     <div className="col-sm-3" key={index}>
                       <Flex direction="column" className="single-brand-item">
                         <Image
-                         component={NextImage}
                           width={100}
                           height={100}
+                          component={NextImage}
                           src={item.companyImage}
                           className="mx-auto text-center"
                         />
