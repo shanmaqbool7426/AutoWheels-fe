@@ -43,22 +43,28 @@ const Header = () => {
     {
       icon: <Image w={16} h={16} mt={3} src="/megamenu/new-car.svg" />,
       title: "New Cars",
+      link:"/new/car",
       description: "Find new cars in Pakistan",
     },
     {
       icon: <Image w={16} h={16} mt={3} src="megamenu/used-cars.svg" />,
       title: "Used Cars",
       description: "Find new cars in Pakistan",
+      link:"/listing/cars",
+
     },
     {
       icon: <Image w={16} h={16} mt={3} src="megamenu/featured-cars.svg" />,
       title: "Featured Used Cars",
       description: "Find new cars in Pakistan",
+      link:"/listing/cars",
+
     },
     {
       icon: <Image w={16} h={16} mt={3} src="megamenu/sell-cars.svg" />,
       title: "Sell Your Cars",
       description: "Find new cars in Pakistan",
+      link:"/listing/cars",
     },
   ];
   const secondColMegaMenuLinks = [
@@ -103,7 +109,7 @@ const Header = () => {
   ];
 
   const firstColLinks = firstColMegaMenuLinks?.map((item) => (
-    <UnstyledButton component={Link} href="#">
+    <UnstyledButton component={Link} href={item?.link ?? "#"}>
       <Group wrap="nowrap" gap="xs" align="flex-start" className="subLink">
         {item.icon}
         <div>

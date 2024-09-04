@@ -78,7 +78,7 @@ export const formatToLacOrCrore = (value) => {
   } else if (value >= 100000) { 
     return (value / 100000).toFixed(1) + ' lac';
   }
-  return value.toString(); 
+  return  value?.toString() ?? 0; 
 };
 
 

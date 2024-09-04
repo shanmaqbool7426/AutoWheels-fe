@@ -4,8 +4,11 @@ import { API_ENDPOINTS } from '@/constants/api-endpoints';
 export const fetchVehiclsData = async (params) => {
   try {
     const vehicls = await fetchAPI(`http://localhost:5000/api/vehicle/vehicles-listing${params}`)
+    console.log('vehicls>>>',`http://localhost:5000/api/vehicle/vehicles-listing${params}`)
     return vehicls
   } catch (error) {
+    console.log('vehicls>>>',error)
+
     return {
       vehicls: []
     };
@@ -60,10 +63,10 @@ export const fetchVehiclDetail = async (url) => {
 };
 
 
-export const fetchMakesAndBodies = async () => {
+export const fetchMakesAndBodies = async (params) => {
   const results = await Promise.allSettled([
-    fetchAPI(`${API_ENDPOINTS.MAKES}?type=car`),
-    fetchAPI(`${API_ENDPOINTS.BODIES}/car`),
+    fetchAPI(`${API_ENDPOINTS.MAKES}?type=${params}`),
+    fetchAPI(`${API_ENDPOINTS.BODIES}/${params}`),
   ]);
   const data = {
     makes: results[0].status === 'fulfilled' ? results[0].value : [],
