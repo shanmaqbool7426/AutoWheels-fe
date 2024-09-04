@@ -37,7 +37,7 @@ import ImageUploader from "@/components/ui/ImageUploader";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { HiDocumentAdd } from "react-icons/hi";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import {cities ,colorOptions,registrationOptions,suburbs,carTags} from "@/mock-data/mock-array"
+import {cities ,colorOptions,registrationOptions,suburbs,carTags} from "../../mock-data/mock-array"
 import CustomModel from "@/constants/CustomModel"
 import {postDataToServer} from "@/actions/index"
 // import { cities } from "@/constants/vehicle-constants"; 
