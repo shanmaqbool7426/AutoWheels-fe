@@ -26,7 +26,7 @@ export const postDataToServer = async (formData) => {
 
   try {
     // Perform the fetch request
-    const response = await fetchAPI(API_ENDPOINTS.VEHICLE_DETAIL, options);
+    const response = await fetchAPI('http://localhost:5000', options);
 
     // Return the response data
     console.log("🚀 ~ postDataToServer ~ response data:", response);
@@ -58,8 +58,8 @@ export const fetchBrowseBlogsServer = async (type) => {
 };
 export const fetchVideoDataServer = async (params) => {
   try {
+    console.log('<<<<<<<<<<<<<<<<',`${API_ENDPOINTS.BROWSE_VIDEOS}${params?.slug?`?slug=${params?.slug}`:''}${params?.search?`?search=${params?.search}`:''}`);
     const videos = await await fetchAPI(`${API_ENDPOINTS.BROWSE_VIDEOS}${params?.slug?`?slug=${params?.slug}`:''}${params?.search?`?search=${params?.search}`:''}`);
-    console.log(videos,'hsdjdfhsjfhjsdhfjsdhf');
     return videos?.data;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);

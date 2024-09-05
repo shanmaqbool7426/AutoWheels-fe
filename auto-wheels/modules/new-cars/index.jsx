@@ -32,8 +32,8 @@ import NewCarsCard from "@/components/ui/NewCarsCard"
 import { IconSearch } from "@tabler/icons-react";
 import BrowseByCategory from "@/modules/home/BrowseByCategory";
 import ComparisonProducts from "@/modules/home/ComparisonProducts";
-import BrowseVideos from "@/modules/home/BrowseVideos";
-import BrowseBlogs from "@/modules/home/BrowseBlogs";
+import BrowseVideos from "@/components/videos/browse-videos";
+import BrowseBlogs from "@/components/blog/browse-blogs";
 import { Carousel } from "@mantine/carousel";
 import { useDisclosure } from "@mantine/hooks";
 

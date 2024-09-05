@@ -37,33 +37,37 @@ import ImageUploader from "@/components/ui/ImageUploader";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { HiDocumentAdd } from "react-icons/hi";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import {cities ,colorOptions,registrationOptions,suburbs,carTags} from "../../mock-data/mock-array"
+import { cities, colorOptions, registrationOptions, suburbs, carTags } from "../../mock-data/mock-array"
 import CustomModel from "@/constants/CustomModel"
-import {postDataToServer} from "@/actions/index"
+import { postDataToServer } from "@/actions/index"
+import { fetchMakesByType } from "@/services/vehicles";
 // import { cities } from "@/constants/vehicle-constants"; 
 
 
 const PostAnAd = () => {
   const [activeStep, setActiveStep] = useState(0);
-    const [images, setImages] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selection, setSelection] = useState({
+  const [images, setImages] = useState([]); 
+  const [makes, setMakes] = useState({});
+
+  // const [fetchMakesByType, setFetchMakesByType] = useState({}); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selection, setSelection] = useState({
     make: '',
     model: '',
     variant: '',
   });
-    const [formDataStep1, setFormDataStep1] = useState({
+  const [formDataStep1, setFormDataStep1] = useState({
     condition: '',
     city: '',
     suburb: '',
-    registeredIn:"",
+    registeredIn: "",
     rego: '',
     exteriorColor: '',
-    milage:"",
-    price:"",
-    description:"",
-    carInfo:{},
-    images:[]
+    milage: "",
+    price: "",
+    description: "",
+    carInfo: {},
+    images: []
 
   });
   const [formDataStep2, setFormDataStep2] = useState({
@@ -77,7 +81,7 @@ const PostAnAd = () => {
   const [formDataStep3, setFormDataStep3] = useState({
     mobileNumber: '',
     secondaryNumber: '',
-    allowWhatsAppContact:false,
+    allowWhatsAppContact: false,
   });
 
 
@@ -88,7 +92,7 @@ const PostAnAd = () => {
       1: formDataStep2,
       2: formDataStep3
     }[step];
-    
+
     const validators = {
       0: (data) => (
         data.condition &&
@@ -99,8 +103,8 @@ const PostAnAd = () => {
         data.exteriorColor &&
         data.milage &&
         data.price &&
-        data.description && 
-        images.length>0
+        data.description &&
+        images.length > 0
       ),
       1: (data) => (
         data.engineType &&
@@ -110,10 +114,10 @@ const PostAnAd = () => {
         data.features.length > 0
       ),
       2: (data) => (
-        data.mobileNumber && 
-        /^[\d]{10,15}$/.test(data.mobileNumber) && 
-         data.secondaryNumber && 
-        /^[\d]{10,15}$/.test(data.mobileNumber) && 
+        data.mobileNumber &&
+        /^[\d]{10,15}$/.test(data.mobileNumber) &&
+        data.secondaryNumber &&
+        /^[\d]{10,15}$/.test(data.mobileNumber) &&
         data.allowWhatsAppContact
 
         // Example validation for mobile number format
@@ -131,33 +135,36 @@ const PostAnAd = () => {
       carInfo: selection
     }));
 
-  }, [selection]);  
-   
+  }, [selection]);
 
-
-
-  
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
- 
 
-  
-
-    const handleChangeStep1 = (value, field) => {
+  const handleChangeStep1 = (value, field) => {
     setFormDataStep1((prevData) => ({
       ...prevData,
       [field]: value
     }));
   };
 
+  useEffect(() => {
+    const getMakes = async () => {
+      const response = await fetchMakesByType('car');
 
-    const handleInputChangeStep2 = (field, value) => {
+      console.log('>>>>>> response',response)
+      setMakes(response);
+    };
+
+    getMakes(); // Call the async function
+  }, []); // Empty dependency array ensures this only runs once
+
+  const handleInputChangeStep2 = (field, value) => {
     setFormDataStep2(prevState => ({
       ...prevState,
       [field]: value,
     }));
   };
-    const handleChangeStep3 = (e) => {
+  const handleChangeStep3 = (e) => {
     const { name, value } = e.target;
     setFormDataStep3((prevData) => ({
       ...prevData,
@@ -176,98 +183,99 @@ const PostAnAd = () => {
     }));
   };
 
-     const handleDescriptionClick = (template) => {
+  const handleDescriptionClick = (template) => {
     setFormDataStep1((prevData) => ({
       ...prevData,
       description: prevData.description + template
     }));
   };
-  
 
-const handleSubmit = async () => {
-  const formData = new FormData();
 
-  // Define hardcoded values
-  const specifications = {
-    suburb: formDataStep1.suburb,
-    rego: formDataStep1.rego,
-    exteriorColor: formDataStep1.exteriorColor,
-    milage: formDataStep1.milage,
-    engineType: formDataStep2.engineType,
-    engineCapacity: formDataStep2.engineCapacity,
-    transmission: formDataStep2.transmission,
-    assembly: formDataStep2.assembly
-  };
+  const handleSubmit = async () => {
+    const formData = new FormData();
 
-  const hardcodedFields = {
-    startPrice: 10000,   // Replace with your actual value
-    endPrice: 20000,     // Replace with your actual value
-    cityArea: 'Downtown', // Replace with your actual value
-    type: 'car',         // This should match the allowed enum values
-    year: new Date().getFullYear(), // Current year
-    make: 'Toyota',      // Replace with your actual value
-    model: 'Camry'       // Replace with your actual value
-  };
+    // Define hardcoded values
+    const specifications = {
+      suburb: formDataStep1.suburb,
+      rego: formDataStep1.rego,
+      exteriorColor: formDataStep1.exteriorColor,
+      milage: formDataStep1.milage,
+      engineType: formDataStep2.engineType,
+      engineCapacity: formDataStep2.engineCapacity,
+      transmission: formDataStep2.transmission,
+      assembly: formDataStep2.assembly
+    };
 
-  // Append text fields
-  Object.entries({ ...formDataStep1, ...formDataStep2, specifications }).forEach(([key, value]) => {
-    if (key === 'carInfo' && value) {
-      Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-        formData.append(`carInfo[${nestedKey}]`, nestedValue);
-      });
-    } else if (key === 'features' && Array.isArray(value)) {
-      formData.append('features', JSON.stringify(value)); // Append array as JSON string
-    } else if (key === 'specifications' && value) {
-      formData.append('specifications', JSON.stringify(value)); // Append object as JSON string
-    } else if (key !== 'images' && value !== undefined && value !== null && value !== '') {
-      formData.append(key, value);
-    }
-  });
+    const hardcodedFields = {
+      startPrice: 10000,   // Replace with your actual value
+      endPrice: 20000,     // Replace with your actual value
+      cityArea: 'Downtown', // Replace with your actual value
+      type: 'car',         // This should match the allowed enum values
+      year: new Date().getFullYear(), // Current year
+      make: 'Toyota',      // Replace with your actual value
+      model: 'Camry'       // Replace with your actual value
+    };
 
-  // Append hardcoded fields
-  Object.entries(hardcodedFields).forEach(([key, value]) => {
-    formData.append(key, value);
-  });
-
-  // Append contactInfo as a nested object
-  Object.entries(formDataStep3).forEach(([key, value]) => {
-    formData.append(`contactInfo[${key}]`, value);
-  });
-
-  // Append images
-  if (formDataStep1.images && formDataStep1.images.length > 0) {
-    formDataStep1.images.forEach(file => {
-      formData.append('images', file); // Append files to 'images'
+    // Append text fields
+    Object.entries({ ...formDataStep1, ...formDataStep2, specifications }).forEach(([key, value]) => {
+      if (key === 'carInfo' && value) {
+        Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+          formData.append(`carInfo[${nestedKey}]`, nestedValue);
+        });
+      } else if (key === 'features' && Array.isArray(value)) {
+        formData.append('features', JSON.stringify(value)); // Append array as JSON string
+      } else if (key === 'specifications' && value) {
+        formData.append('specifications', JSON.stringify(value)); // Append object as JSON string
+      } else if (key !== 'images' && value !== undefined && value !== null && value !== '') {
+        formData.append(key, value);
+      }
     });
-  }
 
-  // Log FormData entries for debugging
-  // console.log('FormData entries:');
-  // for (let [key, value] of formData.entries()) {
-  //   if (value instanceof File) {
-  //     console.log(`${key}: ${value.name}`);
-  //   } else {
-  //     console.log(`${key}: ${value}`);
-  //   }
-  // }
+    // Append hardcoded fields
+    Object.entries(hardcodedFields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
-  try {
-    const data = await postDataToServer(formData);
-    console.log("🚀 ~ handleSubmit ~ data:", data);
-  } catch (error) {
-    console.log("🚀 ~ handleSubmit ~ error:", error);
-  }
-};
+    // Append contactInfo as a nested object
+    Object.entries(formDataStep3).forEach(([key, value]) => {
+      formData.append(`contactInfo[${key}]`, value);
+    });
+
+    // Append images
+    if (formDataStep1.images && formDataStep1.images.length > 0) {
+      formDataStep1.images.forEach(file => {
+        formData.append('images', file); // Append files to 'images'
+      });
+    }
+
+    // Log FormData entries for debugging
+    // console.log('FormData entries:');
+    // for (let [key, value] of formData.entries()) {
+    //   if (value instanceof File) {
+    //     console.log(`${key}: ${value.name}`);
+    //   } else {
+    //     console.log(`${key}: ${value}`);
+    //   }
+    // }
+
+    try {
+      const data = await postDataToServer(formData);
+      console.log("🚀 ~ handleSubmit ~ data:", data);
+    } catch (error) {
+      console.log("🚀 ~ handleSubmit ~ error:", error);
+    }
+  };
+
+
+
+
+  console.log('>>> makes',makes)
 
 
 
 
 
-
-
-
-
- const nextStep = () => {
+  const nextStep = () => {
     if (!validateStep(activeStep)) {
       alert('Please fill in all required fields.');
       return;
@@ -295,7 +303,7 @@ const handleSubmit = async () => {
   };
 
   const previews = images.map((file, index) => {
-  const imageUrl = URL.createObjectURL(file);
+    const imageUrl = URL.createObjectURL(file);
     return (
       <Box className="uploaded-image-wrapper" pos="relative">
         <Image
@@ -436,9 +444,9 @@ const handleSubmit = async () => {
                         (All fields marked with * are mandatory)
                       </Text>
 
-                    {/* step 1 start*/}
+                      {/* step 1 start*/}
 
-                        <Box className="stepper-form" mt="xl">
+                      <Box className="stepper-form" mt="xl">
                         <Box className="row align-items-center" mb="xl">
                           <Box className="col-md-2 text-lg-end mb-2 mb-lg-0">
                             <Input.Label required size="md">
@@ -447,13 +455,13 @@ const handleSubmit = async () => {
                           </Box>
                           <Box className="col-md-7">
                             <Select
-            size="md"
-            placeholder="New"
-            data={['used', 'new', 'certified']}
-            value={formDataStep1.condition}
-               onChange={(value) => handleChangeStep1(value, 'condition')}
-           
-          />
+                              size="md"
+                              placeholder="New"
+                              data={['used', 'new', 'certified']}
+                              value={formDataStep1.condition}
+                              onChange={(value) => handleChangeStep1(value, 'condition')}
+
+                            />
                           </Box>
                         </Box>
 
@@ -464,14 +472,14 @@ const handleSubmit = async () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                           <Select
-            size="md"
-            placeholder="City"
-            data={cities}
-            value={formDataStep1.city}
-             onChange={(value) => handleChangeStep1(value, 'city')}
-     
-          />
+                            <Select
+                              size="md"
+                              placeholder="City"
+                              data={cities}
+                              value={formDataStep1.city}
+                              onChange={(value) => handleChangeStep1(value, 'city')}
+
+                            />
                           </Box>
                           <Box className="col-md-3 text-center">
                             <Group gap="xs" align="center">
@@ -495,8 +503,8 @@ const handleSubmit = async () => {
                               placeholder="Suburb"
                               data={suburbs}
                               value={formDataStep1.suburb}
-                               onChange={(value) => handleChangeStep1(value, 'suburb')}
-                             
+                              onChange={(value) => handleChangeStep1(value, 'suburb')}
+
                             />
                           </Box>
                         </Box>
@@ -507,10 +515,10 @@ const handleSubmit = async () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7" onClick={openModal} >
-                          <Text className="border p-2 rounded" >
-                           {selection.make} , {selection.model} ,{selection.variant}
-                          </Text>
-                          
+                            <Text className="border p-2 rounded" >
+                              {selection.make}  {selection.model} {selection.variant}
+                            </Text>
+
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -525,8 +533,8 @@ const handleSubmit = async () => {
                               placeholder="Registered In"
                               data={registrationOptions}
                               value={formDataStep1.registeredIn}
-                               onChange={(value) => handleChangeStep1(value, 'registeredIn')}
-                             
+                              onChange={(value) => handleChangeStep1(value, 'registeredIn')}
+
                             />
                           </Box>
                         </Box>
@@ -541,7 +549,7 @@ const handleSubmit = async () => {
                               size="md"
                               placeholder="Rego"
                               data={registrationOptions}
-                                value={formDataStep1.rego}
+                              value={formDataStep1.rego}
                               onChange={(value) => handleChangeStep1(value, 'rego')}
                             />
                           </Box>
@@ -557,9 +565,9 @@ const handleSubmit = async () => {
                               size="md"
                               placeholder="Exterior Color"
                               data={colorOptions}
-                                value={formDataStep1.exteriorColor}
-                                onChange={(value) => handleChangeStep1(value, 'exteriorColor')}
-                              
+                              value={formDataStep1.exteriorColor}
+                              onChange={(value) => handleChangeStep1(value, 'exteriorColor')}
+
                             />
                           </Box>
                         </Box>
@@ -577,11 +585,11 @@ const handleSubmit = async () => {
                                   KM
                                 </Text>
                               }
-                         
+
                               size="md"
-                             value={formDataStep1.milage}
-                             onChange={(value) => handleChangeStep1(value.target.value, 'milage')}
-                           
+                              value={formDataStep1.milage}
+                              onChange={(value) => handleChangeStep1(value.target.value, 'milage')}
+
                             />
                           </Box>
                           <Box className="col-md-3 text-start">
@@ -608,10 +616,10 @@ const handleSubmit = async () => {
                                   PKR
                                 </Text>
                               }
-                         
+
                               size="md"
-                               value={formDataStep1.price}
-                                onChange={(value) => handleChangeStep1(value.target.value, 'price')}
+                              value={formDataStep1.price}
+                              onChange={(value) => handleChangeStep1(value.target.value, 'price')}
                             />
                           </Box>
                           <Box className="col-md-3 text-start">
@@ -639,7 +647,7 @@ const handleSubmit = async () => {
                               maxRows={6}
                               fs={8}
                               value={formDataStep1.description}
-                              onChange={(e) => handleChangeStep1(e.target.value,'description')}
+                              onChange={(e) => handleChangeStep1(e.target.value, 'description')}
                             />
                             <Group gap={0}>
                               <Text size="sm" c="dimmed" ml="auto">
@@ -668,16 +676,16 @@ const handleSubmit = async () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7 border p-2 cursor-pointer ">
-                          <Text size="sm">You can also use these suggestions</Text>
+                            <Text size="sm">You can also use these suggestions</Text>
                             <Box className=" d-flex flex-wrap flex-row	gap-1 mt-2  "  >
-                               {carTags.map((tag, index) => (
-                        <Box   className="border p-2  rounded  m-2"   key={index}
+                              {carTags.map((tag, index) => (
+                                <Box className="border p-2  rounded  m-2" key={index}
 
-            onClick={() => handleDescriptionClick(tag + ' ')} >
-                         <Text size="sm" >{tag}</Text>
-                        </Box>
-          
-        ))}
+                                  onClick={() => handleDescriptionClick(tag + ' ')} >
+                                  <Text size="sm" >{tag}</Text>
+                                </Box>
+
+                              ))}
                             </Box>
                           </Box>
                         </Box>
@@ -739,13 +747,13 @@ const handleSubmit = async () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                             <Select
-            size="md"
-            placeholder="Petrol"
-            data={["Petrol", "Diesel", "Electric", "Hybrid"]}
-            value={formDataStep2.engineType}
-            onChange={(value) => handleInputChangeStep2('engineType', value)}
-          />
+                            <Select
+                              size="md"
+                              placeholder="Petrol"
+                              data={["Petrol", "Diesel", "Electric", "Hybrid"]}
+                              value={formDataStep2.engineType}
+                              onChange={(value) => handleInputChangeStep2('engineType', value)}
+                            />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -756,11 +764,11 @@ const handleSubmit = async () => {
                           </Box>
                           <Box className="col-md-7">
                             <NumberInput
-            size="md"
-            placeholder="1300"
-            value={formDataStep2.engineCapacity}
-            onChange={(value) => handleInputChangeStep2('engineCapacity', value)}
-          />
+                              size="md"
+                              placeholder="1300"
+                              value={formDataStep2.engineCapacity}
+                              onChange={(value) => handleInputChangeStep2('engineCapacity', value)}
+                            />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -771,12 +779,12 @@ const handleSubmit = async () => {
                           </Box>
                           <Box className="col-md-7">
                             <Select
-            size="md"
-            placeholder="Transmission"
-            data={["Automatic", "Manual", "CVT", "Semi-Automatic"]}
-            value={formDataStep2.transmission}
-            onChange={(value) => handleInputChangeStep2('transmission', value)}
-          />
+                              size="md"
+                              placeholder="Transmission"
+                              data={["Automatic", "Manual", "CVT", "Semi-Automatic"]}
+                              value={formDataStep2.transmission}
+                              onChange={(value) => handleInputChangeStep2('transmission', value)}
+                            />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -786,13 +794,13 @@ const handleSubmit = async () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                             <Select
-            size="md"
-            placeholder="Local"
-            data={["Local", "Imported"]}
-            value={formDataStep2.assembly}
-            onChange={(value) => handleInputChangeStep2('assembly', value)}
-          />
+                            <Select
+                              size="md"
+                              placeholder="Local"
+                              data={["Local", "Imported"]}
+                              value={formDataStep2.assembly}
+                              onChange={(value) => handleInputChangeStep2('assembly', value)}
+                            />
                           </Box>
                         </Box>
                         <Box className="row align-items-start" mb="xl">
@@ -802,43 +810,43 @@ const handleSubmit = async () => {
                           <Box className="col-md-7">
                             <Box className="row">
                               <Box className="col-md-4">
-                            {featuredListsOne.map((item, index) => (
-                <Checkbox
-                  key={index}
-                  color="#E90808"
-                  label={item.name}
-                  mb="sm"
-                  size="sm"
-                  checked={formDataStep2.features.includes(item.name)}
-                  onChange={() => handleFeatureChange(item.name)}
-                />
-              ))}
+                                {featuredListsOne.map((item, index) => (
+                                  <Checkbox
+                                    key={index}
+                                    color="#E90808"
+                                    label={item.name}
+                                    mb="sm"
+                                    size="sm"
+                                    checked={formDataStep2.features.includes(item.name)}
+                                    onChange={() => handleFeatureChange(item.name)}
+                                  />
+                                ))}
                               </Box>
                               <Box className="col-md-4">
                                 {featuredListsTwo.map((item, index) => (
-                <Checkbox
-                  key={index}
-                  color="#E90808"
-                  label={item.name}
-                  mb="sm"
-                  size="sm"
-                  checked={formDataStep2.features.includes(item.name)}
-                  onChange={() => handleFeatureChange(item.name)}
-                />
-              ))}
+                                  <Checkbox
+                                    key={index}
+                                    color="#E90808"
+                                    label={item.name}
+                                    mb="sm"
+                                    size="sm"
+                                    checked={formDataStep2.features.includes(item.name)}
+                                    onChange={() => handleFeatureChange(item.name)}
+                                  />
+                                ))}
                               </Box>
                               <Box className="col-md-4">
                                 {featuredListsThree.map((item, index) => (
-                <Checkbox
-                  key={index}
-                  color="#E90808"
-                  label={item.name}
-                  mb="sm"
-                  size="sm"
-                  checked={formDataStep2.features.includes(item.name)}
-                  onChange={() => handleFeatureChange(item.name)}
-                />
-              ))}
+                                  <Checkbox
+                                    key={index}
+                                    color="#E90808"
+                                    label={item.name}
+                                    mb="sm"
+                                    size="sm"
+                                    checked={formDataStep2.features.includes(item.name)}
+                                    onChange={() => handleFeatureChange(item.name)}
+                                  />
+                                ))}
                               </Box>
                             </Box>
                           </Box>
@@ -871,15 +879,15 @@ const handleSubmit = async () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                             <Input
-            type="number"
-            size="md"
-            name="mobileNumber"
-            placeholder="Mobile Number"
-            value={formDataStep3.mobileNumber}
-            onChange={handleChangeStep3}
-            rightSection={<BiMobileAlt />}
-          />
+                            <Input
+                              type="number"
+                              size="md"
+                              name="mobileNumber"
+                              placeholder="Mobile Number"
+                              value={formDataStep3.mobileNumber}
+                              onChange={handleChangeStep3}
+                              rightSection={<BiMobileAlt />}
+                            />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -889,15 +897,15 @@ const handleSubmit = async () => {
                             </Input.Label>
                           </Box>
                           <Box className="col-md-7">
-                           <Input
-            type="number"
-            size="md"
-            name="secondaryNumber"
-            placeholder="Secondary Number (Optional)"
-            value={formDataStep3.secondaryNumber}
-            onChange={handleChangeStep3}
-            rightSection={<BiMobileAlt />}
-          />
+                            <Input
+                              type="number"
+                              size="md"
+                              name="secondaryNumber"
+                              placeholder="Secondary Number (Optional)"
+                              value={formDataStep3.secondaryNumber}
+                              onChange={handleChangeStep3}
+                              rightSection={<BiMobileAlt />}
+                            />
                           </Box>
                         </Box>
                         <Box className="row align-items-center" mb="xl">
@@ -930,9 +938,9 @@ const handleSubmit = async () => {
                   </Stepper.Completed>
                 </Stepper>
 
- <Flex justify="space-between" mt="md">
-      {activeStep > 0 && (
-        <Button
+                <Flex justify="space-between" mt="md">
+                  {activeStep > 0 && (
+                    <Button
                       variant="light"
                       fw={500}
                       autoContrast
@@ -944,32 +952,32 @@ const handleSubmit = async () => {
                     >
                       Back
                     </Button>
-      )}
-      {activeStep < 2 ? (
-         <Button
-                    autoContrast
-                    fw={500}
-                    color="#E90808"
-                    size="lg"
-                    rightSection={<FaArrowRightLong />}
-                    w={{ base: "100%", xs: rem(160) }}
-                    onClick={nextStep}
-                  >
-                    Next
-                  </Button>
-      ) : (
-        <Button   autoContrast
-                    fw={500}
-                    color="#E90808"
-                    size="lg"
-                    rightSection={<FaArrowRightLong />}
-                    w={{ base: "100%", xs: rem(160) }}
-                 
-                     onClick={handleSubmit} variant="filled">
-          Submit
-        </Button>
-      )}
-    </Flex>
+                  )}
+                  {activeStep < 2 ? (
+                    <Button
+                      autoContrast
+                      fw={500}
+                      color="#E90808"
+                      size="lg"
+                      rightSection={<FaArrowRightLong />}
+                      w={{ base: "100%", xs: rem(160) }}
+                      onClick={nextStep}
+                    >
+                      Next
+                    </Button>
+                  ) : (
+                    <Button autoContrast
+                      fw={500}
+                      color="#E90808"
+                      size="lg"
+                      rightSection={<FaArrowRightLong />}
+                      w={{ base: "100%", xs: rem(160) }}
+
+                      onClick={handleSubmit} variant="filled">
+                      Submit
+                    </Button>
+                  )}
+                </Flex>
                 {/* <Group
                   justify={activeStep >= 1 ? "space-between" : "flex-end"}
                   mt="xl"
@@ -1008,7 +1016,7 @@ const handleSubmit = async () => {
       </Box>
 
 
-        <CustomModel isOpen={isModalOpen} selection={selection} setSelection={setSelection} onClose={closeModal} />
+      <CustomModel isOpen={isModalOpen} selection={selection} setSelection={setSelection} onClose={closeModal} fetchMakesByTypeData={makes}/>
     </>
   );
 };

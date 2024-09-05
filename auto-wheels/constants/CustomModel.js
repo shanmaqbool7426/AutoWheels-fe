@@ -20,7 +20,7 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
   const models = {};
   const variants = {};
   
-  fetchMakesByTypeData.data.forEach((make) => {
+  fetchMakesByTypeData?.data?.forEach((make) => {
     makes.push(make.name);
     models[make.name] = [];
     make.models.forEach((model) => {
