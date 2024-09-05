@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
     COMPARISONS: 'https://fakestoreapi.com/products',
     INSTANT_USED_CARS: 'https://fakestoreapi.com/products',
     BROWSE_VIDEOS: `${BASE_URL}/api/video/browse-videos`,
+    COMMENT: `${BASE_URL}/api/comment`,
     VIDEOS: `${BASE_URL}/api/video/video-listing/`,
     BLOGS: `${BASE_URL}/api/blog/blog-listing/`,
     BROWSE_BLOGS: `${BASE_URL}/api/blog/browse-blogs`,
