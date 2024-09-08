@@ -43,7 +43,7 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
       }
 
       if (type === 'model') {
-        closeModal()
+       hide && closeModal()
         return {
           ...updatedSelection,
           variant: '',  // Reset variant
@@ -51,6 +51,13 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
 
       }
 
+      if (type === 'variant') {
+        closeModal()
+        return {
+          ...updatedSelection,
+        };
+
+      }
       return updatedSelection;
     });
   };
@@ -64,6 +71,8 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
     console.log('Current Selection:', selection);
   }, [selection]);
 
+
+  console.log('>>>.',selection)
   return (
     <Box>
       <Modal

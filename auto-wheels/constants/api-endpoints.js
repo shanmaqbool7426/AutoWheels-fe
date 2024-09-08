@@ -23,6 +23,8 @@ export const API_ENDPOINTS = {
     BROWSE_BLOGS: `${BASE_URL}/api/blog/browse-blogs`,
     TAGS:`${BASE_URL}/api/tag`,
     SIGNUP:`${BASE_URL}/api/user/register`,
-    VERIFY_OTP:`${BASE_URL}/api/user/verify-user`
+    VERIFY_OTP:`${BASE_URL}/api/user/verify-user`,
+    SUBMITREVIEW:`${BASE_URL}/api/reviews`,
+    GET_ALL_REVIEWS:`${BASE_URL}/api/reviews`
   };
   

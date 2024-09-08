@@ -1,6 +1,7 @@
 "use server"
 import { fetchAPI } from '@/services/fetchAPI';
 import { API_ENDPOINTS } from '@/constants/api-endpoints';
+import axios from 'axios';
 
 export const fetchMakesByTypeServer = async (type) => {
   try {
@@ -15,28 +16,30 @@ export const fetchMakesByTypeServer = async (type) => {
 };
 
 
-export const postDataToServer = async (formData) => {
-  console.log("🚀 ~ postDataToServer ~ formData:", formData);
-
-  // Create options for the fetch request
-  const options = {
-    method: 'POST',
-    body: formData, // No need to set Content-Type header, FormData handles it
-  };
-
+export const postDataToServer = async (url, payload) => {
   try {
-    // Perform the fetch request
-    const response = await fetchAPI('http://localhost:5000', options);
+    console.log('Payload URL:', url);
+
+
+    if (response.status !== 200) {
+      console.error("🚀 ~ postDataToServer ~ errorData:", response.data);
+      return {
+        success: false,
+        message: `Error ${response.status}: ${response.data.message || 'Failed to post data'}`,
+      };
+    }
 
     // Return the response data
-    console.log("🚀 ~ postDataToServer ~ response data:", response);
-    return response;
+    return {
+      success: true,
+      data: response.data,
+    };
+
   } catch (error) {
-    // Log and handle errors
     console.error("🚀 ~ postDataToServer ~ error:", error);
     return {
       success: false,
-      message: 'Failed to post data',
+      message: 'An unexpected error occurred',
     };
   }
 };
@@ -68,3 +71,8 @@ export const fetchVideoDataServer = async (params) => {
     };
   }
 };
+
+
+
+
+

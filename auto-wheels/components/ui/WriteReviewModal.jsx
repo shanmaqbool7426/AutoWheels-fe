@@ -16,7 +16,7 @@ import {
   Title,
   Button,
 } from "@mantine/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   EmohiVeryHappy,
   EmojiDisappointed,
@@ -25,8 +25,41 @@ import {
   EmojiSad,
 } from "../Icons";
 import { FaStar } from "react-icons/fa6";
+import { postDataToServer } from "@/actions";
+import { API_ENDPOINTS } from "@/constants/api-endpoints";
+import axios from "axios";
+import CustomModel from "@/constants/CustomModel";
+import { fetchMakesByType } from "@/services/vehicles";
 
 const WriteReviewModal = ({ opened, close }) => {
+
+  const [ratings, setRatings] = useState({
+    mileage: 0,
+    safety: 0,
+    comfort: 0,
+    maintenance: 0,
+    performance: 0,
+    feature:0
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const [reviewText, setReviewText] = useState('');
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [error, setError] = useState('');
+  const [makes, setMakes] = useState({});
+  const [selection, setSelection] = useState({
+    make: '',
+    model: '',
+    variant: '',
+  });
+  const handleRatingChange = (category, value) => {
+    setRatings((prevRatings) => ({
+      ...prevRatings,
+      [category]: value,
+    }));
+  };
   const getEmptyIcon = (value) => {
     switch (value) {
       case 1:
@@ -91,22 +124,91 @@ const WriteReviewModal = ({ opened, close }) => {
         return null;
     }
   };
+    // Submit handler for the review form
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      const reviewData = {
+        vehicle:"Honda civic 111",
+        ratings,
+        reviewText,
+        reviewTitle,
+      };
+  
+      try {
+          setIsModalOpen(false)
+          close()
+        console.log('>>reviewData',reviewData)
+        const response = await axios.post(API_ENDPOINTS.SUBMITREVIEW, reviewData, {
+          headers: {
+            'Content-Type': 'application/json',  // Explicitly set Content-Type for JSON
+          },
+        });
+        // Make a POST request to submit the review
+       console.log('response',response)
+        if (response.status === 200) {
+          setSubmitSuccess(true);
+          close()
+          setReviewText(''); // Clear form
+          setRatings({
+            Mileage: 0,
+            Safety: 0,
+            Comfort: 0,
+            Performance: 0,
+            MaintenanceCost: 0,
+            FeaturesAndStyling: 0,
+          });
+        } else {
+          setError('Failed to submit review. Please try again.');
+        }
+      } catch (err) {
+        setError('An error occurred while submitting your review.');
+      }
+    };
 
+    useEffect(() => {
+      const getMakes = async () => {
+        const response = await fetchMakesByType('car');
+  
+        console.log('>>>>>> response',response)
+        setMakes(response);
+      };
+  
+      getMakes(); // Call the async function
+    }, []); // Empty dependency array ensures this only runs once
+  
+
+
+  const calculateAverageRating = (reviews) => {
+    const categories = ['mileage', 'maintenance', 'safety', 'comfort', 'features', 'performance'];
+    const averageRatings = {};
+
+    categories.forEach((category) => {
+      const total = reviews.reduce((sum, review) => sum + review.ratings[category], 0);
+      averageRatings[category] = total / reviews.length;
+    });
+
+    return averageRatings;
+  };
+
+  
   return (
+    <>
     <Modal
-      opened={true}
+      opened={opened}
       onClose={close}
       withCloseButton
       padding="xl"
       size="50%"
       title={
         <Text size="xl" fw={600}>
-          Rate & Review Maruti Alto 800 and Win
+          Rate & Review {selection.make}  {selection.model}  {selection.variant} and Win
         </Text>
       }
     >
+      <form onSubmit={handleSubmit}>
       {/* Code For First Modal */}
-      {/* <Box className="row">
+      <Box className="row">
         <Box className="col-md-7">
           <Card
             shadow="0px 4px 20px 0px #00000014"
@@ -127,8 +229,8 @@ const WriteReviewModal = ({ opened, close }) => {
                 <Text size="md" c="dimmed" fw={400}>
                   Rate and Review
                 </Text>
-                Maruti Alto 800
-                <ActionIcon ml="sm" variant="transparent" color="#E90808">
+                {selection.make}  {selection.model}  {selection.variant}
+                <ActionIcon ml="sm" variant="transparent" color="#E90808"  onClick={()=>setIsModalOpen(true)}>
                   <svg
                     width="16"
                     height="16"
@@ -152,8 +254,11 @@ const WriteReviewModal = ({ opened, close }) => {
             <Text w="20ch">Mileage</Text>
             <Rating
               emptySymbol={getEmptyIcon}
-              fullSymbol={getFullIcon}
+              fullSymbol={getFullIcon}  
               highlightSelectedOnly
+              value={ratings.mileage}
+               onChange={(value) => handleRatingChange('mileage', value)} 
+
             />
           </Group>
           <Group mb="sm">
@@ -162,7 +267,10 @@ const WriteReviewModal = ({ opened, close }) => {
               emptySymbol={getEmptyIcon}
               fullSymbol={getFullIcon}
               highlightSelectedOnly
-            />
+              value={ratings.performance} 
+              onChange={(value) => handleRatingChange('performance', value)}
+                        />
+
           </Group>
           <Group mb="sm">
             <Text w="20ch">Safety</Text>
@@ -170,6 +278,8 @@ const WriteReviewModal = ({ opened, close }) => {
               emptySymbol={getEmptyIcon}
               fullSymbol={getFullIcon}
               highlightSelectedOnly
+              value={ratings.safety} 
+              onChange={(value) => handleRatingChange('safety', value)}
             />
           </Group>
           <Group mb="sm">
@@ -178,6 +288,8 @@ const WriteReviewModal = ({ opened, close }) => {
               emptySymbol={getEmptyIcon}
               fullSymbol={getFullIcon}
               highlightSelectedOnly
+              value={ratings.feature} 
+              onChange={(value) => handleRatingChange('feature', value)}
             />
           </Group>
           <Group mb="sm">
@@ -186,6 +298,8 @@ const WriteReviewModal = ({ opened, close }) => {
               emptySymbol={getEmptyIcon}
               fullSymbol={getFullIcon}
               highlightSelectedOnly
+              value={ratings.comfort} 
+              onChange={(value) => handleRatingChange('comfort', value)}
             />
           </Group>
           <Group mb="sm">
@@ -194,6 +308,8 @@ const WriteReviewModal = ({ opened, close }) => {
               emptySymbol={getEmptyIcon}
               fullSymbol={getFullIcon}
               highlightSelectedOnly
+              value={ratings.performance} 
+              onChange={(value) => handleRatingChange('performance', value)}
             />
           </Group>
         </Box>
@@ -223,7 +339,7 @@ const WriteReviewModal = ({ opened, close }) => {
             </List>
           </Paper>
         </Box>
-      </Box> */}
+      </Box>
       {/* Code For First Modal */}
       <Box className="row">
         <Box className="col-md-7">
@@ -247,7 +363,7 @@ const WriteReviewModal = ({ opened, close }) => {
                 <Text size="md" c="dimmed" fw={400}>
                   Rate and Review
                 </Text>
-                Maruti Alto 800
+                {selection.make}  {selection.model}  {selection.variant}
                 <ActionIcon ml="sm" variant="transparent" color="#E90808">
                   <svg
                     width="16"
@@ -262,6 +378,7 @@ const WriteReviewModal = ({ opened, close }) => {
                     />
                   </svg>
                 </ActionIcon>
+                {getFullIcon}
               </Text>
             </Flex>
           </Card>
@@ -276,23 +393,25 @@ const WriteReviewModal = ({ opened, close }) => {
               </Text>
             </Flex>
           </Paper>
+          {getFullIcon}
           <Box mb="md">
             <Textarea
               placeholder="Share the details of your experience"
               rows={4}
               cols={4}
+              onChange={(e)=>setReviewText(e.target.value)}
             />
             <Text c="dimmed" size="xs" mt={5} ta="end">
               Minimum 100 characters
             </Text>
           </Box>
           <Box mb="md">
-            <Input placeholder="Title of your Review" />
+            <Input placeholder="Title of your Review" onChange={(e)=>setReviewTitle(e.target.value)}/>
             <Text c="dimmed" size="xs" mt={5} ta="end">
               Minimum 100 characters
             </Text>
           </Box>
-          <Button color="#E90808" fullWidth>
+          <Button color="#E90808" fullWidth type="submit">
             Submit Review
           </Button>
         </Box>
@@ -323,7 +442,12 @@ const WriteReviewModal = ({ opened, close }) => {
           </Paper>
         </Box>
       </Box>
+      </form>
     </Modal>
+
+<CustomModel  isOpen={isModalOpen} selection={selection} setSelection={setSelection} onClose={closeModal} fetchMakesByTypeData={makes} hide={false}/>
+
+    </>
   );
 };
 
