@@ -13,7 +13,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Script from "next/script";
 import { Notifications } from '@mantine/notifications';
-import '@mantine/notifications/styles.css';
 
 
 // Font configurations
