@@ -208,7 +208,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from 'axios';
 import { API_ENDPOINTS } from "@/constants/api-endpoints";
 
-export const authOptions = {
+ const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
