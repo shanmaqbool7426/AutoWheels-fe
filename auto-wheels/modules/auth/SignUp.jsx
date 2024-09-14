@@ -15,7 +15,6 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
-import { notifications } from '@mantine/notifications';
 
 import SignIn from "./SignIn";
 import Otp from "./Otp";

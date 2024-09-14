@@ -1,6 +1,5 @@
 import { Modal, Button, Group, Text, PinInput, Center } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 
 import { useEffect, useState } from 'react';
 import { useFormSubmission } from '@/custom-hooks/useForm';
@@ -47,13 +46,13 @@ function Otp({ otpOpen = false, otpClose = () => {}, email }) {
   
     if (data && data.success) {
     
-      notifications.show({
-        message: data.message,
-        position:"top-right",
-        color: "green",
-        duration: 4000,
-        ripple: true,
-      })
+      // notifications.show({
+      //   message: data.message,
+      //   position:"top-right",
+      //   color: "green",
+      //   duration: 4000,
+      //   ripple: true,
+      // })
 
       // Handle successful OTP verification, e.g., navigate to another page
       otpClose(); // Close OTP modal on successful verification
