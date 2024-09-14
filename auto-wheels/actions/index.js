@@ -1,7 +1,6 @@
 "use server"
 import { fetchAPI } from '@/services/fetchAPI';
 import { API_ENDPOINTS } from '@/constants/api-endpoints';
-import axios from 'axios';
 
 export const fetchMakesByTypeServer = async (type) => {
   try {

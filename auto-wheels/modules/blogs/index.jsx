@@ -10,6 +10,7 @@ import PopularPosts from "@/modules/blogs/PopularPosts";
 import Posts from "@/modules/blogs/Posts";
 import TopCategory from "@/modules/blogs/TopCategory";
 import CategoryPosts from "@/modules/blogs/CategoryPosts";
+import BlogDetails from "@/modules/blogs/Detail";
 
 const BlogModule = async ({ params }) => {
   // Fetch data concurrently
@@ -44,6 +45,11 @@ const BlogModule = async ({ params }) => {
                 count={data?.count}
               />
             )}
+            {
+              isSingleBlog && (
+                <BlogDetails blog={data?.blog}/>
+              )
+            }
             {isBlogsPage && (
               <TopCategory category={data?.categories?.find(category => category.slug === 'news')} />
             )}

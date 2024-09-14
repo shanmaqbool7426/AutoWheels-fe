@@ -61,6 +61,18 @@ export const fetchVehiclDetail = async (url) => {
   }
 };
 
+export const fetchVehicleBySlug = async (params) => {
+  try {
+    console.log(params.params.slug[0],'sjdhsjdhsj');
+    const vehicle = await fetchAPI(`${API_ENDPOINTS.VEHICLE_DETAIL}/${params.params.slug[0]}`)
+    return vehicle
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    return {
+      vehicle: {}
+    };
+  }
+};
 
 export const fetchMakesAndBodies = async (params) => {
   const results = await Promise.allSettled([
