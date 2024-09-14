@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Suspense}from "react";
 import BlogModule from "../../modules/blogs"; 
 export default function Blog({ params, searchParams }) {
     return (
