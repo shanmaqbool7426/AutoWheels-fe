@@ -204,17 +204,17 @@ const PostAnAd = () => {
       transmission: formDataStep2.transmission,
       assembly: formDataStep2.assembly
     };
-  
+
     const hardcodedFields = {
-      startPrice: 10000,   
-      endPrice: 20000,     
-      cityArea: 'Downtown', 
-      type: 'car',        
-      year: new Date().getFullYear(), 
-      make: 'Toyota',     
-      model: 'Camry'      
+      startPrice: 10000,
+      endPrice: 20000,
+      cityArea: 'Downtown',
+      type: 'car',
+      year: new Date().getFullYear(),
+      make: 'Toyota',
+      model: 'Camry'
     };
-  
+
     // Combine all fields into a single JSON object
     const payload = {
       ...formDataStep1,
@@ -224,7 +224,7 @@ const PostAnAd = () => {
       contactInfo: formDataStep3, // Include contactInfo as a nested object
       images: formDataStep1.images, // Use the uploaded image URLs
     };
-  
+
     try {
       const data = await submitFormData(API_ENDPOINTS?.VEHICLE_ADD, JSON.stringify(payload), {
         'Content-Type': 'application/json', // Set content-type to JSON
@@ -245,7 +245,7 @@ const PostAnAd = () => {
 
     // Proceed to the next step
     setActiveStep(prev => prev + 1);
-    window.scroll({top: 0, behavior: "smooth"})
+    window.scroll({ top: 0, behavior: "smooth" })
 
   };
   // Handle previous step click
@@ -256,31 +256,31 @@ const PostAnAd = () => {
 
   const handleFileDrop = async (images) => {
     setImages(images);
-  
+
     try {
       const formData = new FormData();
       images.forEach((image) => {
         formData.append('images', image); // Append each image with the key "image"
       });
-  
+
       const uploadUrl = 'http://localhost:5000/upload-image'; // Absolute URL to avoid Next.js routing issues
       const response = await submitFormData(uploadUrl, formData);
-      
+
       // Assuming the response contains an array of image URLs
       const uploadedImageUrls = response.data; // Example assuming { data: [url1, url2, ...] }
-  
+
       // Update state with the uploaded image URLs
       setFormDataStep1((prev) => ({
         ...prev,
         images: uploadedImageUrls, // Store the image URLs instead of image files
       }));
-  
+
       console.log('Uploaded image URLs:', uploadedImageUrls);
     } catch (error) {
       console.error('Image upload failed:', error.message);
     }
   };
-  
+
 
   const previews = images.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
@@ -664,12 +664,12 @@ const PostAnAd = () => {
                             <Text size="sm">You can also use these suggestions</Text>
                             <Box className=" d-flex flex-wrap flex-row	gap-1 mt-2  "  >
                               {carTags.map((tag, index) => (
-                                <Box className="border p-2  rounded  m-2" key={index}
-
-                                  onClick={() => handleDescriptionClick(tag + ' ')} >
-                                  <Text size="sm" >{tag}</Text>
-                                </Box>
-
+                                <>
+                                  <Box className="border p-2  rounded  m-2" key={`-${index}`}
+                                    onClick={() => handleDescriptionClick(tag + ' ')} >
+                                    <Text size="sm" >{tag}</Text>
+                                  </Box>
+                                </>
                               ))}
                             </Box>
                           </Box>
