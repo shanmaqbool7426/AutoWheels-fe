@@ -1,10 +1,10 @@
-
+import { Suspense } from "react";
 import Listing from "@/components/listing/listing";
-export default function ProductListing({ params ,searchParams}) {
-  
+
+export default function ProductListing({ params, searchParams }) {
   return (
-    <>
-    <Listing params={params} searchParams={searchParams}/>
-    </>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Listing params={params} searchParams={searchParams} />
+    </Suspense>
   );
 }
