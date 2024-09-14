@@ -56,7 +56,6 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
   };
   // const [value, setValue] = useState(50);
   // const [endValue, setEndValue] = useState(50);
-console.log('>>>>>>>>>//',listOfSimilarVehicles)
   const carSummaryItems = [
    
     {
@@ -136,7 +135,6 @@ console.log('>>>>>>>>>//',listOfSimilarVehicles)
   ];
 
 
-  console.log('>>>>.', listOfSimilarVehicles)
   return (
     <>
       <section className="product-detail py-5">
@@ -418,7 +416,6 @@ console.log('>>>>>>>>>//',listOfSimilarVehicles)
             {listOfSimilarVehicles?.data?.map((vehicle, index) => {
               return (
                 <div className="col-md-3" key={index}>
-                  {console.log('>>>',vehicle?.defaultImage)}
                   <div className="card product-card">
                     <div className="product-image position-relative">
                       <div className="featured-badge">Special</div>

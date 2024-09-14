@@ -20,11 +20,9 @@ export default async function Listing({ params, searchParams }) {
     const sortBy = searchParams.sortBy ? `sb_${searchParams.sortBy}` : searchParams.sortBy;
     const reorderedSlug = reorderSlug(params.slug, view, sortBy);
     let loading = true;
-    console.log('<<<<<',reorderedSlug)
     const dataofVehcles = await fetchVehiclsData(reorderedSlug);
     const vehicleMakes = await fetchMakesByType(typeMapping[params.slug[0]]);
     const vehicleBodies = await fetchBodiesByType(typeMapping[params.slug[0]]);
-    console.log('>>>>>>dataofVehcles', dataofVehcles)
 
     loading = false;
     return (

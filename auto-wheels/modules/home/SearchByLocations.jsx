@@ -28,10 +28,8 @@ const SearchByLocations = () => {
         )
         .map((city) => city.name);
         
-        console.log('filtered',filtered)
         if (filtered.length==1) {
           const cityQuery =  `/ct_${filtered[0].toLowerCase()}`;
-          console.log('cityQuery',cityQuery)
           const searchUrl = `/listing/cars/search/-${cityQuery}`;
           router.push(searchUrl)?.finally(() => {
             setLoading(false);  // Reset loading state after redirect

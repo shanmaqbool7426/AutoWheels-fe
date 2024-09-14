@@ -51,16 +51,12 @@ const HeroTabs = () => {
 
   const fetchMakesByType = async (vehicleType) => {
     try {
-      console.log('Fetching makes for vehicle type:', vehicleType);
       const fetchMakes = await fetchMakesByTypeServer(vehicleType);
-      console.log('Fetched makes:', fetchMakes);
       setFetchMakesByTypeData(fetchMakes);
     } catch (error) {
-      console.error('Error fetching makes:', error);
     }
   };
 
-  console.log('isModalOpen', isModalOpen)
 
   // useEffect hook to fetch data when makesByType changes
   useEffect(() => {

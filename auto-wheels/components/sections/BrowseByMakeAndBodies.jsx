@@ -5,7 +5,6 @@ import React from "react";
 import NextImage from "next/image";
 
 const BrowseByMakeAndBodies = ({ makes, bodies }) => {
-  console.log("BrowseByCategory", bodies);
   return (
     <div className="browse-cats-section py-5 bg-light">
       <div className="container">

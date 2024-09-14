@@ -68,14 +68,12 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
   }, [isOpen, open, close]);
 
   useEffect(() => {
-    console.log('Current Selection:', selection);
     ()=>{
     return  closeModal()
     }
   }, [selection]);
 
 
-  console.log('>>>.',selection)
   return (
     <Box>
       <Modal

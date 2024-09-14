@@ -9,7 +9,6 @@ const SocialContact = ({detail}) => {
 
 const [showPhone, setShowPhone] = useState(false)
 
-console.log('>>showPhone',showPhone,detail)
     return (
         <>
             <div className="col-12">

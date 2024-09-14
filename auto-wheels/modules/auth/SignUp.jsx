@@ -49,7 +49,6 @@ function SignUp({ signUpOpened, signUpOnClose }) {
   } = useFormSubmission(API_ENDPOINTS.SIGNUP, form.values, form.validate);
 
 
-  console.log('error',error)
   const handleClose = () => {
     // form.reset(); // Reset form fields when modal closes
     signUpOnClose();
@@ -57,7 +56,6 @@ function SignUp({ signUpOpened, signUpOnClose }) {
 
   useEffect(() => {
     if (data && data?.success) {
-      console.log(">> >>>", data.success);
       setModalOpenedOtp(true);
       handleClose();
     }
@@ -76,7 +74,6 @@ function SignUp({ signUpOpened, signUpOnClose }) {
   };
 
 
-  console.log('>>>> form.values',agreeError)
   return (
     <>
       <Modal
@@ -148,7 +145,6 @@ function SignUp({ signUpOpened, signUpOnClose }) {
             onChange={(e) => {
               form.setFieldValue("agreeToTerms", e.currentTarget.checked);
               if (e.currentTarget.checked) {
-                console.log('>>><<<<<',e.currentTarget.checked)
                 setAgreeError(false)
               };
             }}

@@ -68,7 +68,6 @@ const Comments = () => {
                 setCounts(response?.counts);
             } catch (err) {
                 setError('Error fetching reviews');
-                console.error(err);
             } finally {
                 setLoading(false);
             }

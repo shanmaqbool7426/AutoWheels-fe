@@ -224,7 +224,6 @@ const NewCarsModule = ({ makes, bodies, popularVehicles, fetchUpComingVehicles, 
               </Box>
               {fetchUpComingVehicles?.data?.results.map((vehicle, index) => {
 
-                console.log('>>>>>>', vehicle)
                 return (
                   <Box className="col-md-3" key={index}>
                     <NewCarsCard vehicle={vehicle} isRating={false} />

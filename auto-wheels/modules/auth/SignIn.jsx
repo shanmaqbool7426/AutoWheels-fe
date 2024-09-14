@@ -44,7 +44,6 @@ function SignIn({ signOpen, signInClose }) {
       action: 'Credentials', 
     });
     result.ok && signInClose()
-    console.log('result',result)
   }
 
   return (

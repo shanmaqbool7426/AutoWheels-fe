@@ -193,7 +193,6 @@ const ListingFilter = ({ type, makes ,bodies,vehicles}) => {
     }
     const normalizedKey = key.toLowerCase();
     const entry = vehicles?.counts[countType].find(item => item._id.toLowerCase() === normalizedKey);
-    console.log(entry)
     return entry ? entry.count : null;
 }
   const decodedFilterMake = filters.make.map((make) => decodeURIComponent(make).toLowerCase());

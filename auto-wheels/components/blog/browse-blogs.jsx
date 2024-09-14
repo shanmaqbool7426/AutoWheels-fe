@@ -26,7 +26,6 @@ const BrowseBlogs = ({ type }) => {
         const data = await fetchBrowseBlogsServer(type);
         setBlogs(data);
       } catch (error) {
-        console.error("Error fetching blogs:", error);
       } finally {
         setLoading(false);
       }

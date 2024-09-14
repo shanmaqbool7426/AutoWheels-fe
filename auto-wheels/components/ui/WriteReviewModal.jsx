@@ -138,14 +138,12 @@ const WriteReviewModal = ({ opened, close }) => {
       try {
           setIsModalOpen(false)
           close()
-        console.log('>>reviewData',reviewData)
         const response = await axios.post(API_ENDPOINTS.SUBMITREVIEW, reviewData, {
           headers: {
             'Content-Type': 'application/json',  // Explicitly set Content-Type for JSON
           },
         });
         // Make a POST request to submit the review
-       console.log('response',response)
         if (response.status === 200) {
           setSubmitSuccess(true);
           close()
@@ -170,7 +168,6 @@ const WriteReviewModal = ({ opened, close }) => {
       const getMakes = async () => {
         const response = await fetchMakesByType('car');
   
-        console.log('>>>>>> response',response)
         setMakes(response);
       };
   

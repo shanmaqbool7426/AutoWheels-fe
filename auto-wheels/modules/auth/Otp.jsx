@@ -24,10 +24,8 @@ function Otp({ otpOpen = false, otpClose = () => {}, email }) {
     form.validate
   );
 
-  console.log('in sign in',email)
 
   const handleSubmitOtp =async()=>{
-    console.log('in sign in',email)
     const result = await signIn('credentials', {
       redirect: false,  
       otp: form.values.otp,
@@ -36,7 +34,6 @@ function Otp({ otpOpen = false, otpClose = () => {}, email }) {
       action: 'Credentials', 
     });
     result.ok &&  otpClose()
-    console.log('result',)
   }
   useEffect(() => {
     form.setFieldValue('email', email); // This ensures that the form state is always up to date with the latest email value
@@ -58,7 +55,6 @@ function Otp({ otpOpen = false, otpClose = () => {}, email }) {
       otpClose(); // Close OTP modal on successful verification
     }
   }, [data]);
-console.log('form>>>',form.values)
   return (
     <Modal opened={otpOpen} onClose={otpClose} title="">
       <div className="otp-model-main">

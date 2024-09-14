@@ -33,17 +33,14 @@ const Footer = () => {
   ];
 
   const fetchMakes=async()=>{
-    console.log('type',type)
    const makes=await fetchMakesByTypeServer( type.slice(0,type?.length-1))
    setMakesByType(makes?.data)
-   console.log('makesmakes???',makes)
   }
   useEffect(() => {
     fetchMakes()
   }, [type])
   
 
-  console.log('makesByType',makesByType)
 
   return (
     <footer className="footer">

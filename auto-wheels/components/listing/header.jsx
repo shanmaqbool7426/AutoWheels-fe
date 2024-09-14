@@ -45,7 +45,6 @@ export const ListingHeader = ({ type }) => {
     const updateQueryParams = (newSortBy, newView) => {
         const params = new URLSearchParams(searchParams);
 
-        console.log(newSortBy)
         if (newSortBy) {
             params.set('sortBy', newSortBy);
         }

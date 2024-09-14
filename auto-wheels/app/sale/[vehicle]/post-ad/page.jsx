@@ -153,7 +153,6 @@ const PostAnAd = () => {
     const getMakes = async () => {
       const response = await fetchMakesByType('car');
 
-      console.log('>>>>>> response', response)
       setMakes(response);
     };
 
@@ -229,9 +228,7 @@ const PostAnAd = () => {
       const data = await submitFormData(API_ENDPOINTS?.VEHICLE_ADD, JSON.stringify(payload), {
         'Content-Type': 'application/json', // Set content-type to JSON
       });
-      console.log('Data submitted:', data);
     } catch (error) {
-      console.error('Submission failed:', error.message);
     }
   };
 
@@ -275,9 +272,7 @@ const PostAnAd = () => {
         images: uploadedImageUrls, // Store the image URLs instead of image files
       }));
 
-      console.log('Uploaded image URLs:', uploadedImageUrls);
     } catch (error) {
-      console.error('Image upload failed:', error.message);
     }
   };
 
