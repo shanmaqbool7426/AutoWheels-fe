@@ -3,14 +3,13 @@ import BrowseByCategory from "./BrowseByCategory";
 import BrowseByType from "./BrowseByType";
 import ComparisonProducts from "./ComparisonProducts";
 import SearchByLocations from "./SearchByLocations";
-import BrowseVideos from "./BrowseVideos";
-import BrowseBlogs from "./BrowseBlogs";
+import BrowseVideos from "@/components/videos/browse-videos";
+import BrowseBlogs from "@/components/blog/browse-blogs";
 import {fetcHomeData} from "../../services/home"
 
 export default async  function HomeModule() {
  const res= await fetcHomeData()
 
- console.log('data>>>>>>>>>', res.vehiclesTypes)
   return (
     <>
       <Hero />
@@ -18,8 +17,8 @@ export default async  function HomeModule() {
       <BrowseByType vehicles={res?.vehiclesTypes}/>
       <ComparisonProducts />
       <SearchByLocations />
-      {/* <BrowseVideos /> */}
-      {/* <BrowseBlogs /> */}
+      <BrowseVideos />
+      <BrowseBlogs />
 
      
     </>

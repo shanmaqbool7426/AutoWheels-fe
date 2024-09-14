@@ -912,7 +912,7 @@ const NewCarsDetail = () => {
               </Box>
               {[...Array(8).keys()].map((_, index) => {
                 return (
-                  <Box className="col-md-3">
+                  <Box className="col-md-3" key={index}>
                     <Card
                       shadow="0px 4px 20px 0px #00000014"
                       pb="xl"
@@ -968,7 +968,7 @@ const NewCarsDetail = () => {
               </Box>
               {[...Array(8).keys()].map((_, index) => {
                 return (
-                  <Box className="col-md-3">
+                  <Box className="col-md-3" key={index}>
                     <Card
                       shadow="0px 4px 20px 0px #00000014"
                       pb="xl"

@@ -9,60 +9,8 @@ import { Box } from "@mantine/core";
 
 const CarCard = ({ vehicle, index }) => {
   return (
-    // <div className={`card ${styles.productCard}`}>
-    //   <Image
-    //     src={images}
-    //     className="card-img-top object-fit-cover img-fluid"
-    //     alt="..."
-    //     width={270}
-    //     height={160}
-    //   />
-    //   <div className={styles.progressBars}>
-    //     <span className={`${styles.singleBar} ${styles.active}`}></span>
-    //     <span className={styles.singleBar}></span>
-    //     <span className={styles.singleBar}></span>
-    //   </div>
-    //   <div className="card-body">
-    //     <div className={styles.productContent}>
-    //       <Link
-    //         href={"#"}
-    //         className={`d-inline-block w-50 lc-2 ${styles.productTitle}`}
-    //       >
-    //         Kia Sportage Brand New Model
-    //       </Link>
-    //       <div className={styles.productPrice}>Rs 7,400,000</div>
-    //     </div>
-    //     <div className={styles.productMeta}>
-    //       <div className="meta-info d-flex justify-content-between align-items-center">
-    //         <span className="text-muted d-flex align-items-center gap-1">
-    //           <FaCalendarDays /> 2021
-    //         </span>
-    //         <span className="text-muted d-flex align-items-center gap-1">
-    //           <GearsHandle /> Automatic
-    //         </span>
-    //         <span className="text-muted d-flex align-items-center gap-1">
-    //           <FaLocationDot /> Automatic
-    //         </span>
-    //       </div>
-    //       <div className="stock-info d-flex justify-content-between align-items-center mt-2">
-    //         <span>
-    //           <span className="text-muted">stock#</span> 324
-    //         </span>
-    //         <span className="text-muted">
-    //           <FaClock /> (Updated 1 month ago)
-    //         </span>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
+
     <Box className="card product-card">
-      {/* <Image
-        src="/products/product-placeholder.png"
-        className="card-img-top object-fit-cover img-fluid"
-        alt="..."
-        width={270}
-        height={160}
-      /> */}
       <img
         src={vehicle?.defaultImage ? vehicle?.defaultImage : "/products/product-placeholder.png"}
         alt="..."
@@ -75,7 +23,7 @@ const CarCard = ({ vehicle, index }) => {
       </div>
       <div className="card-body">
         <div className="product-content">
-          <Link href={"#"} className="d-inline-block w-50 lc-2 product-title">
+          <Link href={`/detail/${vehicle?.slug}`} className="d-inline-block w-50 lc-2 product-title">
             {`${vehicle?.year}  ${vehicle?.make} ${vehicle?.model}`}
           </Link>
           <div className="product-price">Rs {vehicle?.price}</div>

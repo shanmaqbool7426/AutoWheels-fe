@@ -14,7 +14,7 @@ export const fetchAPI = async (url, options = {}) => {
 
   try {
     // Perform the fetch request
-    const response = await fetch(url, { revalidate: 3600, cache: 'no-store' });
+    const response = await fetch(url);
 
     // Check if the response is ok (status in the range 200-299)
     if (!response.ok) {
@@ -23,6 +23,7 @@ export const fetchAPI = async (url, options = {}) => {
 
     // Parse and return JSON data
     const data = await response.json();
+    
     return data;
   } catch (error) {
     // Log and handle errors

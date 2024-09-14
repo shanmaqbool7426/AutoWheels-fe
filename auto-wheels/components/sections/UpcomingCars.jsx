@@ -1,7 +1,7 @@
 import { Box, Card, Flex, Image, Text, Title } from "@mantine/core";
 import React from "react";
 
-const UpcomingCars = ({ reviewsText, reviewRating }) => {
+const UpcomingCars = ({ reviewsText, reviewRating, fetchUpComingVehicles }) => {
   return (
     <Box component="section" className="upcoming-cars py-5">
       <Box className="container">
@@ -14,7 +14,7 @@ const UpcomingCars = ({ reviewsText, reviewRating }) => {
               </Text>
             </Title>
           </Box>
-          {[...Array(8).keys()].map((_, index) => {
+          {fetchUpComingVehicles?.data?.results?.map((vehicle, index) => {
             return (
               <Box className="col-lg-3 col-md-4 col-sm-6" key={index}>
                 <Card
@@ -27,7 +27,7 @@ const UpcomingCars = ({ reviewsText, reviewRating }) => {
                   <Image
                     p="lg"
                     pt="xl"
-                    src="/find-cars/img-square.png"
+                    src={vehicle?.defaultImage}
                     height={130}
                     alt="Mehran"
                     className="img-fluid"
@@ -35,13 +35,13 @@ const UpcomingCars = ({ reviewsText, reviewRating }) => {
 
                   <Flex direction="column" align="center" gap="xs" px="lg">
                     <Title order={5} fw={500} c="#E90808">
-                      Toyota Corolla
+                      {vehicle?.make} {vehicle?.model}
                     </Title>
                     {reviewRating ? (
                       reviewRating
                     ) : (
                       <Text fw={600} fs="xl">
-                        Rs 54.79 - 75.49 Lacs
+                        Rs {vehicle?.startPrice} - {vehicle?.startPrice} Lacs
                       </Text>
                     )}
 

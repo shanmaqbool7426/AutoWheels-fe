@@ -8,6 +8,7 @@ export const fetchBlogsPageData = async (params) => {
     : '';
 
     const blogs= await fetchAPI(`${API_ENDPOINTS.BLOGS}${path}`)
+    console.log('blogs>>',blogs)
     return blogs
   } catch (error) {
     console.error('Error fetching dashboard data:', error);

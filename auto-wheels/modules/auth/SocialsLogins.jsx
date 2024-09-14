@@ -14,6 +14,8 @@ import { signIn } from "next-auth/react";
 
 // import { signIn } from 'next-auth/react';
 
+
+
 import classes from "../../app/styles/Demo.module.scss";
 const SocialsLogin = ({ socialOpened, socialOnClose }) => {
   const [modalOpened, setModalOpened] = useState(false);
@@ -60,7 +62,7 @@ const SocialsLogin = ({ socialOpened, socialOnClose }) => {
             size="lg"
             ff="heading"
             leftSection={<Image src={google_icon} alt="Google" />}
-            onClick={() => signIn("google", { redirectTo: "/dashboard" })}
+            onClick={() => signIn("google", { redirectTo: "/" })}
           >
             <Text size="sm" fw={600}>
               Continue with Google
@@ -72,7 +74,7 @@ const SocialsLogin = ({ socialOpened, socialOnClose }) => {
             size="lg"
             ff="heading"
             leftSection={<Image src={facebook_icon} alt="Facebook" />}
-            onClick={() => signIn("facebook", { redirectTo: "/dashboard" })}
+            onClick={() => signIn("facebook", { redirectTo: "/" })}
           >
             <Text size="sm" fw={600}>
               Continue with Facebook
@@ -106,7 +108,7 @@ const SocialsLogin = ({ socialOpened, socialOnClose }) => {
             span
             fw={600}
             inherit
-            className="text-primary"
+            className="text-primary primary cursor"
             onClick={() => {
               setModalOpened(true);
               socialOnClose();

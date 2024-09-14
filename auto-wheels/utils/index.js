@@ -50,6 +50,7 @@ export const reorderSlug = (slug,view,sortBy) => {
   const exteriorColor = slug.find((item) => item.startsWith('cl_'));
   const fuelType = slug.find((item) => item.startsWith('ft_'));
   const condition = slug.find((item) => item.startsWith('cn_'));
+  const featured = slug.find((item) => item.startsWith('ft_'));
 
   const dynamicSlug = [
       `t_${typeMapping[basePath]}`,
@@ -66,6 +67,7 @@ export const reorderSlug = (slug,view,sortBy) => {
       exteriorColor,
       fuelType,
       condition,
+      featured,
       sortBy
   ].filter(Boolean);
 

@@ -1,14 +1,18 @@
 import { Modal, Button, Group, Text, PinInput, Center } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+
 import { useEffect, useState } from 'react';
 import { useFormSubmission } from '@/custom-hooks/useForm';
 import { API_ENDPOINTS } from '@/constants/api-endpoints';
 import classes from '../../app/styles/Demo.module.scss';
+import { signIn } from 'next-auth/react';
 
-function Otp({ otpOpen = false, otpClose = () => {} }) {
+function Otp({ otpOpen = false, otpClose = () => {}, email }) {
   const form = useForm({
     initialValues: {
       otp: '',
+      email: email
     },
     validate: {
       otp: (value) => (value.length === 4 ? null : 'OTP must be 4 digits'),
@@ -21,13 +25,41 @@ function Otp({ otpOpen = false, otpClose = () => {} }) {
     form.validate
   );
 
+  console.log('in sign in',email)
+
+  const handleSubmitOtp =async()=>{
+    console.log('in sign in',email)
+    const result = await signIn('credentials', {
+      redirect: false,  
+      otp: form.values.otp,
+      email: form.values.email,
+      type:"otp",
+      action: 'Credentials', 
+    });
+    result.ok &&  otpClose()
+    console.log('result',)
+  }
   useEffect(() => {
+    form.setFieldValue('email', email); // This ensures that the form state is always up to date with the latest email value
+  }, [email]);
+
+  useEffect(() => {
+  
     if (data && data.success) {
+    
+      notifications.show({
+        message: data.message,
+        position:"top-right",
+        color: "green",
+        duration: 4000,
+        ripple: true,
+      })
+
       // Handle successful OTP verification, e.g., navigate to another page
       otpClose(); // Close OTP modal on successful verification
     }
   }, [data]);
-
+console.log('form>>>',form.values)
   return (
     <Modal opened={otpOpen} onClose={otpClose} title="">
       <div className="otp-model-main">
@@ -48,7 +80,7 @@ function Otp({ otpOpen = false, otpClose = () => {} }) {
         </Center>
         {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
         <Group justify="flex-end" mt="md" className="mx-5 my-5">
-          <Button variant="primary" type="submit" fullWidth disabled={isLoading} onClick={handleSubmit}>
+          <Button variant="primary" type="submit" fullWidth disabled={isLoading} onClick={handleSubmitOtp}>
             {isLoading ? 'Loading...' : 'Submit'}
           </Button>
         </Group>

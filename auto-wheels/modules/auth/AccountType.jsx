@@ -22,6 +22,8 @@ const AccountTypeModal = ({ opened, onClose }) => {
 
   const handleAccountTypeClick = (type) => {
     setModalOpened(true);
+    localStorage.setItem("account-type", type);
+
     setActiveType(type);
     onClose();
   };

@@ -1,11 +1,11 @@
 "use server"
 import { fetchAPI } from '@/services/fetchAPI';
 import { API_ENDPOINTS } from '@/constants/api-endpoints';
-import axios from 'axios';
 
 export const fetchMakesByTypeServer = async (type) => {
   try {
     const makes = await await fetchAPI(`${API_ENDPOINTS.MAKES}?type=${type}`);
+    console.log('makesmakesmakes>>>>>>',makes)
     return makes;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);

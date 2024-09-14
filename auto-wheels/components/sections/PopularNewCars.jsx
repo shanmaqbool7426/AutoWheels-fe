@@ -1,7 +1,9 @@
 import { Box, Card, Flex, Image, Rating, Text, Title } from "@mantine/core";
 import React from "react";
 
-const PopularNewCars = ({ bg = true }) => {
+const PopularNewCars = ({ bg = true , popularVehicles}) => {
+
+  console.log('popularVehicles.....',popularVehicles)
   return (
     <Box
       component="section"
@@ -17,7 +19,7 @@ const PopularNewCars = ({ bg = true }) => {
               </Text>
             </Title>
           </Box>
-          {[...Array(8).keys()].map((_, index) => {
+          {popularVehicles?.data?.results?.map((vehicle, index) => {
             return (
               <Box className="col-md-3" key={index}>
                 <Card
@@ -30,7 +32,7 @@ const PopularNewCars = ({ bg = true }) => {
                   <Image
                     p="lg"
                     pt="xl"
-                    src="/find-cars/img-square.png"
+                    src={vehicle?.defaultImage}
                     height={130}
                     alt="Mehran"
                     className="img-fluid"
@@ -38,10 +40,10 @@ const PopularNewCars = ({ bg = true }) => {
 
                   <Flex direction="column" align="center" gap="xs">
                     <Title order={5} fw={500} c="#E90808">
-                      Toyota Corolla
+                        {vehicle?.make}   {vehicle?.model}
                     </Title>
                     <Text fw={600} fs="xl">
-                      Rs 54.79 - 75.49 Lacs
+                      Rs {vehicle?.startPrice} - {vehicle?.startPrice} Lacs
                     </Text>
                     <Flex align="center" justify="center" gap="xs">
                       <Rating defaultValue={2} />

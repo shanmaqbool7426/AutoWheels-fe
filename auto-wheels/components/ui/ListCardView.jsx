@@ -57,7 +57,7 @@ const ListCardView = ({vehicle,index}) => {
             {conditionMap[vehicle?.condition]}
           </div>
 
-          <Link href={"#"} className="product-title">
+          <Link href={`/detail${vehicle?.slug}`} className="product-title">
             <h4 className=" mb-0 fw-bold">
             {`${vehicle?.year}  ${vehicle?.make} ${vehicle?.model}`}
             </h4>

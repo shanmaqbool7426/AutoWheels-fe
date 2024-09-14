@@ -203,7 +203,7 @@ console.log('>>>>>>>>>//',listOfSimilarVehicles)
               </section>
               {/* Product Image Section */}
               <section className="product-image-section my-5">
-                <Gellary />
+                <Gellary images={detail?.data?.images}/>
               </section>
               {/* Product Image Section */}
 

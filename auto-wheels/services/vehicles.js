@@ -3,8 +3,7 @@ import { API_ENDPOINTS } from '@/constants/api-endpoints';
 
 export const fetchVehiclsData = async (params) => {
   try {
-    const vehicls = await fetchAPI(`http://localhost:5000/api/vehicle/vehicles-listing${params}`)
-    console.log('vehicls>>>',`http://localhost:5000/api/vehicle/vehicles-listing${params}`)
+    const vehicls = await fetchAPI(`${API_ENDPOINTS.VEHICLES_Listing}/${params}`)
     return vehicls
   } catch (error) {
     console.log('vehicls>>>',error)
@@ -62,6 +61,18 @@ export const fetchVehiclDetail = async (url) => {
   }
 };
 
+export const fetchVehicleBySlug = async (params) => {
+  try {
+    console.log(params.params.slug[0],'sjdhsjdhsj');
+    const vehicle = await fetchAPI(`${API_ENDPOINTS.VEHICLE_DETAIL}/${params.params.slug[0]}`)
+    return vehicle
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    return {
+      vehicle: {}
+    };
+  }
+};
 
 export const fetchMakesAndBodies = async (params) => {
   const results = await Promise.allSettled([
