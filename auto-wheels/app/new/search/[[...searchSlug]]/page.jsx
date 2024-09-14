@@ -9,6 +9,7 @@ const page = () => {
            <div className="col-md-3">
              <ListingFilter type={'car'} makes={makes} bodies={bodies} vehicles={popularVehicles?.data} />
  
+ 
            </div>
            <div className="col-md-9 mt-5"> 
            <Card shadow="sm" padding="lg" radius="md" withBorder>
