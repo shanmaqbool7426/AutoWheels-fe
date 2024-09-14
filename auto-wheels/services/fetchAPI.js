@@ -23,6 +23,7 @@ export const fetchAPI = async (url, options = {}) => {
 
     // Parse and return JSON data
     const data = await response.json();
+    
     return data;
   } catch (error) {
     // Log and handle errors
