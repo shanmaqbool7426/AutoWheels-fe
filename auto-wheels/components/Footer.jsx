@@ -1,6 +1,13 @@
-import Link from 'next/link';
 
+'use client'
+import { fetchMakesByTypeServer } from '@/actions';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 const Footer = () => {
+  const params= useParams()
+  const [makesByType, setMakesByType] = useState([])
+  const type= params?.slug  && params.slug[0] || "cars"
   const makes = [
     'Toyota',
     'Suzuki',
@@ -25,6 +32,19 @@ const Footer = () => {
     'Sialkot',
   ];
 
+  const fetchMakes=async()=>{
+    console.log('type',type)
+   const makes=await fetchMakesByTypeServer( type.slice(0,type?.length-1))
+   setMakesByType(makes?.data)
+   console.log('makesmakes???',makes)
+  }
+  useEffect(() => {
+    fetchMakes()
+  }, [type])
+  
+
+  console.log('makesByType',makesByType)
+
   return (
     <footer className="footer">
       <div className="container">
@@ -34,10 +54,10 @@ const Footer = () => {
               <div className="col-lg-3">
                 <div className="cat-title">Cars By Make</div>
                 <ul className="list-unstyled">
-                  {makes.map((make, index) => (
+                  {makesByType?.map((make, index) => (
                     <li key={index}>
-                      <Link href={`/listing/cars/search/-/mk_${make.toLowerCase()}`}>
-                        {make} Cars for Sale
+                      <Link href={`/listing/${make?.type}s/search/-/mk_${make?.name?.toLowerCase()}`}>
+                        {make?.name} {make?.type} for Sale
                       </Link>
                     </li>
                   ))}

@@ -112,18 +112,27 @@ const HeroTabs = () => {
     <>
       <Tabs color="pink" radius="xs" defaultValue="cars" autoContrast>
         <Tabs.List grow justify="center">
-          <Tabs.Tab value="cars" leftSection={<CarFrontView />} c="#6c757d"  onClick={()=>setMakesByType("car")}>
+          <Tabs.Tab value="cars" leftSection={<CarFrontView />} c="#6c757d"  onClick={()=>{
+            setMakesByType("car")
+            closeModal()
+          }}>
             Car
           </Tabs.Tab>
           <Tabs.Tab
             value="bikes"
             leftSection={<MotorBike />}
             c="#6c757d"
-            onClick={()=>setMakesByType("bike")}
+            onClick={()=>{
+              setMakesByType("bike")
+              closeModal()
+            }}
           >
             Bike
           </Tabs.Tab>
-          <Tabs.Tab value="trucks" leftSection={<Truck />} c="#6c757d" onClick={()=>setMakesByType("truck")}>
+          <Tabs.Tab value="trucks" leftSection={<Truck />} c="#6c757d" onClick={()=>{
+            setMakesByType("truck")
+            closeModal()
+          }}>
             Truck
           </Tabs.Tab>
         </Tabs.List>
@@ -155,7 +164,7 @@ const HeroTabs = () => {
           <Group justify="end" mt="sm">
             <Button
               component={Link}
-              href="#"
+              href={`/listing/${makesByType}s`}
               rightSection={<BsArrowRight />}
               variant="transparent"
               px={0}
@@ -195,7 +204,7 @@ const HeroTabs = () => {
           <Group justify="end" mt="sm">
             <Button
               component={Link}
-              href="#"
+              href={`/listing/${makesByType}s`}
               rightSection={<BsArrowRight />}
               variant="transparent"
               px={0}
@@ -235,7 +244,7 @@ const HeroTabs = () => {
           <Group justify="end" mt="sm">
             <Button
               component={Link}
-              href="#"
+              href={`/listing/${makesByType}s`}
               rightSection={<BsArrowRight />}
               variant="transparent"
               px={0}

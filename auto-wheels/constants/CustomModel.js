@@ -79,8 +79,8 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
   return (
     <Box>
       <Modal
-        opened={opened}
-        onClose={close || closeModal}
+        opened={isOpen}
+        onClose={closeModal}
         withCloseButton={true}
         size="50%"
         padding={0}
