@@ -1,6 +1,7 @@
 import React from "react";
 import {Box,Text,Title,Image} from "@mantine/core";
 import ReplyBlog from "@/components/blog/reply-blog"
+import BlogDetailHtml from "@/components/blog/blog-detail-html";
 const Detail = ({ blog }) => {
     return (
         <>
@@ -20,6 +21,8 @@ const Detail = ({ blog }) => {
                     {blog?.content}
                 </Text>
             </Box>
+            {/* Blog Detail Html */}
+            <BlogDetailHtml/>
             {/* Reply Section */}
             <ReplyBlog blog={blog} />
 

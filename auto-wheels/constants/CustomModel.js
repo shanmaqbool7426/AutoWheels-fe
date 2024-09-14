@@ -20,7 +20,7 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
   const models = {};
   const variants = {};
   
-  fetchMakesByTypeData.data.forEach((make) => {
+  fetchMakesByTypeData?.data?.forEach((make) => {
     makes.push(make.name);
     models[make.name] = [];
     make.models.forEach((model) => {
@@ -43,7 +43,7 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
       }
 
       if (type === 'model') {
-        closeModal()
+       hide && closeModal()
         return {
           ...updatedSelection,
           variant: '',  // Reset variant
@@ -51,6 +51,13 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
 
       }
 
+      if (type === 'variant') {
+        closeModal()
+        return {
+          ...updatedSelection,
+        };
+
+      }
       return updatedSelection;
     });
   };
@@ -62,16 +69,23 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
 
   useEffect(() => {
     console.log('Current Selection:', selection);
+    ()=>{
+    return  closeModal()
+    }
   }, [selection]);
 
+
+  console.log('>>>.',selection)
   return (
     <Box>
       <Modal
         opened={opened}
         onClose={close || closeModal}
-        withCloseButton={false}
+        withCloseButton={true}
         size="50%"
         padding={0}
+        closeOnClickOutside={false}  // Prevent modal from closing on outside click
+
       >
         <Paper
           className="search-modal-header"

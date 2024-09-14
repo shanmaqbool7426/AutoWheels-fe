@@ -5,6 +5,7 @@ import { API_ENDPOINTS } from '@/constants/api-endpoints';
 export const fetchMakesByTypeServer = async (type) => {
   try {
     const makes = await await fetchAPI(`${API_ENDPOINTS.MAKES}?type=${type}`);
+    console.log('makesmakesmakes',makes)
     return makes;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
@@ -15,28 +16,30 @@ export const fetchMakesByTypeServer = async (type) => {
 };
 
 
-export const postDataToServer = async (formData) => {
-  console.log("🚀 ~ postDataToServer ~ formData:", formData);
-
-  // Create options for the fetch request
-  const options = {
-    method: 'POST',
-    body: formData, // No need to set Content-Type header, FormData handles it
-  };
-
+export const postDataToServer = async (url, payload) => {
   try {
-    // Perform the fetch request
-    const response = await fetchAPI(API_ENDPOINTS.VEHICLE_DETAIL, options);
+    console.log('Payload URL:', url);
+
+
+    if (response.status !== 200) {
+      console.error("🚀 ~ postDataToServer ~ errorData:", response.data);
+      return {
+        success: false,
+        message: `Error ${response.status}: ${response.data.message || 'Failed to post data'}`,
+      };
+    }
 
     // Return the response data
-    console.log("🚀 ~ postDataToServer ~ response data:", response);
-    return response;
+    return {
+      success: true,
+      data: response.data,
+    };
+
   } catch (error) {
-    // Log and handle errors
     console.error("🚀 ~ postDataToServer ~ error:", error);
     return {
       success: false,
-      message: 'Failed to post data',
+      message: 'An unexpected error occurred',
     };
   }
 };
@@ -58,8 +61,8 @@ export const fetchBrowseBlogsServer = async (type) => {
 };
 export const fetchVideoDataServer = async (params) => {
   try {
+    console.log('<<<<<<<<<<<<<<<<',`${API_ENDPOINTS.BROWSE_VIDEOS}${params?.slug?`?slug=${params?.slug}`:''}${params?.search?`?search=${params?.search}`:''}`);
     const videos = await await fetchAPI(`${API_ENDPOINTS.BROWSE_VIDEOS}${params?.slug?`?slug=${params?.slug}`:''}${params?.search?`?search=${params?.search}`:''}`);
-    console.log(videos,'hsdjdfhsjfhjsdhfjsdhf');
     return videos?.data;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
@@ -68,3 +71,8 @@ export const fetchVideoDataServer = async (params) => {
     };
   }
 };
+
+
+
+
+

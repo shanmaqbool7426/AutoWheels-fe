@@ -94,3 +94,18 @@ export const fetchVehiclesNew = async (url) => {
 }
 
 
+export const getAllReviews = async (filterType='all') => {
+  try {
+
+    const getAllReviews = await await fetchAPI(`${API_ENDPOINTS.GET_ALL_REVIEWS}?filterType=${filterType}`);
+    console.log('.......',getAllReviews)
+    return getAllReviews?.data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    return {
+      getAllReviews: [11],
+    };
+  }
+};
+
+

@@ -15,6 +15,8 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
+import { notifications } from '@mantine/notifications';
+
 import SignIn from "./SignIn";
 import Otp from "./Otp";
 import { useFormSubmission } from "@/custom-hooks/useForm";
@@ -25,6 +27,7 @@ import { IconInfoCircle } from "@tabler/icons-react";
 function SignUp({ signUpOpened, signUpOnClose }) {
   const [modalOpened, setModalOpened] = useState(false);
   const [modalOpenedOtp, setModalOpenedOtp] = useState(false);
+  const [agreeError, setAgreeError] = useState(false); // State to manage checkbox error
 
   const form = useForm({
     initialValues: {
@@ -33,8 +36,10 @@ function SignUp({ signUpOpened, signUpOnClose }) {
       phone: "",
       password: "",
       confirmPassword: "",
+      agreeToTerms: false, // Add agree to terms in initialValues
     },
     validate: validateSignUpForm,
+
   });
 
   const {
@@ -44,30 +49,50 @@ function SignUp({ signUpOpened, signUpOnClose }) {
     data = {},
   } = useFormSubmission(API_ENDPOINTS.SIGNUP, form.values, form.validate);
 
+
+  console.log('error',error)
+  const handleClose = () => {
+    // form.reset(); // Reset form fields when modal closes
+    signUpOnClose();
+  };
+
   useEffect(() => {
     if (data && data?.success) {
       console.log(">> >>>", data.success);
       setModalOpenedOtp(true);
-      signUpOnClose();
+      handleClose();
     }
   }, [data]);
 
-  console.log("modalOpenedOtp", modalOpenedOtp);
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+
+    if (!form.values.agreeToTerms) {
+      setAgreeError(true); // Set error if checkbox is not checked
+      return;
+    }
+    
+    setAgreeError(false); // Reset the error if checkbox is checked
+    handleSubmit(event); // Proceed with form submission
+  };
+
+
+  console.log('>>>> form.values',agreeError)
   return (
     <>
       <Modal
         opened={signUpOpened}
-        onClose={signUpOnClose}
+        onClose={handleClose} // Use modified handleClose function
         withCloseButton={false}
         padding="xl"
         size="lg"
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleFormSubmit}>
           <Group justify="space-between" align="center" mb="md">
             <Title order={4} tt="uppercase">
               Let’s get you started!
             </Title>
-            <CloseButton onClick={signUpOnClose} ml="auto" />
+            <CloseButton onClick={handleClose} ml="auto" />
           </Group>
           <TextInput
             withAsterisk
@@ -115,11 +140,25 @@ function SignUp({ signUpOpened, signUpOnClose }) {
             size="sm"
             label={
               <>
-                I agree with <b>Privacy Policy</b> and <b>Term</b> and
+                I agree with <b>Privacy Policy</b> and <b>Terms</b> and
                 Conditions.
               </>
             }
+            checked={form.values.agreeToTerms}
+            {...form.getInputProps("agreeToTerms", { type: "checkbox" })} // Bind form input props
+            onChange={(e) => {
+              form.setFieldValue("agreeToTerms", e.currentTarget.checked);
+              if (e.currentTarget.checked) {
+                console.log('>>><<<<<',e.currentTarget.checked)
+                setAgreeError(false)
+              };
+            }}
           />
+          {agreeError && (
+            <Text color="red" size="sm" mt="xs">
+              You must agree to the terms and conditions.
+            </Text>
+          )}
           {error && (
             <Alert
               mb="md"
@@ -131,7 +170,6 @@ function SignUp({ signUpOpened, signUpOnClose }) {
             />
           )}
 
-          {/* {error && <div style={{ color: "red" }}>{error}</div>} */}
           <Button
             type="submit"
             fullWidth
@@ -144,7 +182,6 @@ function SignUp({ signUpOpened, signUpOnClose }) {
             loading={isLoading}
           >
             Submit
-            {/* {isLoading ? "Loading..." : "Submit"} */}
           </Button>
           <Text ta="center">
             Already have an account?{" "}
@@ -152,7 +189,7 @@ function SignUp({ signUpOpened, signUpOnClose }) {
               className="primary cursor"
               onClick={() => {
                 setModalOpened(true);
-                signUpOnClose();
+                handleClose();
               }}
             >
               Sign in
@@ -164,9 +201,10 @@ function SignUp({ signUpOpened, signUpOnClose }) {
         signOpen={modalOpened}
         signInClose={() => setModalOpened(false)}
       />
-      <Otp otpOpen={modalOpenedOtp} otpClose={() => setModalOpenedOtp(false)} />
+      <Otp otpOpen={modalOpenedOtp} otpClose={() => setModalOpenedOtp(false)} email={form.values?.email}/>
     </>
   );
 }
+
 
 export default SignUp;

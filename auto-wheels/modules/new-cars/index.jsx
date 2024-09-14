@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Anchor,
   Box,
@@ -28,23 +28,41 @@ import {
 import WriteReviewModal from "@/components/ui/WriteReviewModal";
 import QuickLinks from "@/components/QuickLinks";
 import SearchBar from "./SearchBar"
+import Comments from "@/components/sections/Comments"
 import NewCarsCard from "@/components/ui/NewCarsCard"
 import { IconSearch } from "@tabler/icons-react";
 import BrowseByCategory from "@/modules/home/BrowseByCategory";
 import ComparisonProducts from "@/modules/home/ComparisonProducts";
-import BrowseVideos from "@/modules/home/BrowseVideos";
-import BrowseBlogs from "@/modules/home/BrowseBlogs";
+import BrowseVideos from "@/components/videos/browse-videos";
+import BrowseBlogs from "@/components/blog/browse-blogs";
 import { Carousel } from "@mantine/carousel";
 import { useDisclosure } from "@mantine/hooks";
 
 import BrowseByMakeAndBodies from "@/components/sections/BrowseByMakeAndBodies"
 import ListingFilter from "@/components/listing/sidebar-filter";
+import { getAllReviews } from "@/services/vehicles";
+import { formatToMonthYear } from "@/utils";
 
 const NewCarsModule = ({ makes, bodies, popularVehicles, fetchUpComingVehicles, fetchToyotaVehicles, fetchHondaVehicles, fetchMakesByTypeData, params, searchParams }) => {
   console.log('New Cars', fetchToyotaVehicles?.data)
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
   // const [opened, { open, close }] = useDisclosure(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filter, setFilter] = useState('all'); // Initialize filter state
 
+  const [reviews, setReviews] = useState([]);
+  const [counts, setCounts] = useState({
+    service: 0,
+    mileage: 0,
+    looks: 0,
+    comfort: 0,
+    space: 0,
+    power: 0,
+    total: 0,
+  });
   const company_1 = {
     car: "Toyota",
     bike: "Suzuki",
@@ -65,6 +83,39 @@ const NewCarsModule = ({ makes, bodies, popularVehicles, fetchUpComingVehicles, 
     { name: "Power (53)" },
     { name: "More ..." },
   ];
+
+  const filterOptions = [
+    { type: 'all', label: 'All', countKey: 'total' },
+    { type: 'service', label: 'Service', countKey: 'service' },
+    { type: 'mileage', label: 'Mileage', countKey: 'mileage' },
+    { type: 'looks', label: 'Looks', countKey: 'looks' },
+    { type: 'comfort', label: 'Comfort', countKey: 'comfort' },
+    { type: 'space', label: 'Space', countKey: 'space' },
+    { type: 'power', label: 'Power', countKey: 'power' },
+  ];
+
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setLoading(true);
+        const response = await getAllReviews(filter);
+        setReviews(response);
+        setReviews(response?.reviews);
+        setCounts(response?.counts);
+      } catch (err) {
+        setError('Error fetching reviews');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [filter]);
+
+
+  console.log('reviews', reviews)
   return (
     <>
       <section className="find-cars">
@@ -231,7 +282,7 @@ const NewCarsModule = ({ makes, bodies, popularVehicles, fetchUpComingVehicles, 
             <div className="row">
               <Box className="col-md-12" mb="xl">
                 <Title order={2}>
-                {company_2[params.params.newcarslug[0]]} New {params.params.newcarslug[0]}{" "}
+                  {company_2[params.params.newcarslug[0]]} New {params.params.newcarslug[0]}{" "}
                   <Text span c="#E90808" inherit>
                     Models
                   </Text>
@@ -252,125 +303,11 @@ const NewCarsModule = ({ makes, bodies, popularVehicles, fetchUpComingVehicles, 
         <BrowseVideos />
         <BrowseBlogs />
 
-        <section className="latest-reviews py-5">
-          <div className="container">
-            <Card shadow="0px 4px 20px 0px #00000014" padding="xl">
-              <Title order={2} mb="lg">
-                Latest Reviews of Toyota Corolla 2024
-              </Title>
-              <Box className="give-review" my="xl">
-                <Grid>
-                  <Grid.Col span={4}>
-                    <Box>
-                      <Flex align="center" gap="xs">
-                        <Rating size={rem(42)} defaultValue={1} count={1} />
-                        <Text size={rem(42)} fw="700">
-                          4.3
-                        </Text>
-                        <Text ml="xl">
-                          Based on 601 <br /> User reviews
-                        </Text>
-                      </Flex>
-                    </Box>
-                  </Grid.Col>
-                  <Grid.Col span={4}>
-                    <Button color="#EB2321" size="lg" fullWidth onClick={open}>
-                      Write a Review
-                    </Button>
-                  </Grid.Col>
-                </Grid>
-              </Box>
-              <Box className="reviews-by-tags" mb="xl">
-                <Group>
-                  {tagsArray.map((item, index) => {
-                    return (
-                      <Button
-                        key={index}
-                        variant={item.isSelected ? "filled" : "default"}
-                        color={item.isSelected ? "#EB2321" : "#333333"}
-                        autoContrast
-                        size="md"
-                        fw={500}
-                      >
-                        {item.name}
-                      </Button>
-                    );
-                  })}
-                </Group>
-              </Box>
-
-              <Box className="customer-reviews">
-                <Tabs defaultValue="Latest" color="#EB2321">
-                  <Tabs.List>
-                    <Tabs.Tab
-                      value="Latest"
-                      p="md"
-                      px="xl"
-                      ff="heading"
-                      fw={600}
-                    >
-                      Latest
-                    </Tabs.Tab>
-                  </Tabs.List>
-
-                  <Tabs.Panel value="Latest" py="xl">
-                    <Carousel
-                      loop
-                      withControls={true}
-                      controlsOffset="xl"
-                      controlSize={40}
-                      slideSize="33.33333%"
-                      slideGap="none"
-                      align="start"
-                      slidesToScroll={3}
-                    >
-                      {[1, 2, 3, 4, 5].map((_, index) => {
-                        return (
-                          <Carousel.Slide key={index}>
-                            <Card
-                              shadow="0px 4px 20px 0px rgba(0, 0, 0, 0.08)"
-                              padding="lg"
-                              m="md"
-                            >
-                              <Group mb="md">
-                                <Rating defaultValue={3} count={5} />
-                                <Text span inherit c="dimmed" size="sm">
-                                  For LXI Opt S-CNG
-                                </Text>
-                              </Group>
-                              <Group gap={5}>
-                                <Title order={4} lineClamp={1}>
-                                  Cool Car For A Small Family
-                                </Title>
-                                <Text c="dimmed" lineClamp={3}>
-                                  The car's looks are amazing. In terms of
-                                  comfort, it's acceptable. However, the mileage
-                                  could be bet
-                                </Text>
-                                <Anchor href="#" c="#EB2321">
-                                  Read More
-                                </Anchor>
-                              </Group>
-
-                              <Box className="review-card-footer" mt="md">
-                                <Text>By pooja kate</Text>
-                                <Text c="dimmed">Oct 24, 2023 | 62 Views</Text>
-                              </Box>
-                            </Card>
-                          </Carousel.Slide>
-                        );
-                      })}
-                    </Carousel>
-                  </Tabs.Panel>
-                </Tabs>
-              </Box>
-            </Card>
-          </div>
-        </section>
+  <Comments/>
 
         <QuickLinks />
       </section>
-      {/* <WriteReviewModal opened={opened} close={close} /> */}
+      {/* <WriteReviewModal opened={isModalOpen} close={closeModal} /> */}
     </>
   );
 };
