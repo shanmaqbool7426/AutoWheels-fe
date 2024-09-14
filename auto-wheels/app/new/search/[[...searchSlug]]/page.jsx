@@ -1,6 +1,6 @@
 import ListingFilter from '@/components/listing/sidebar-filter'
-import { Badge, Card, Group } from '@mantine/core'
 import React from 'react'
+import { Box, Card, Flex, Image, Text, Title, Badge,Group } from '@mantine/core';
 
 const page = () => {
     return (
