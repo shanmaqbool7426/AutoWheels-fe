@@ -285,16 +285,16 @@ const PostAnAd = () => {
   const previews = images.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
     return (
-      <Box className="uploaded-image-wrapper" pos="relative">
-        <Image
-          h={{ base: 140, sm: 140 }}
-          key={index}
-          src={imageUrl}
-          onLoad={() => URL.revokeObjectURL(imageUrl)}
-          radius="md"
-          className="border object-fit-cover"
-        />
-      </Box>
+      <>
+        <Box className="uploaded-image-wrapper" pos="relative"  key={index}>
+          <Image
+            h={{ base: 140, sm: 140 }}
+            src={imageUrl}
+            onLoad={() => URL.revokeObjectURL(imageUrl)}
+            radius="md"
+            className="border object-fit-cover"
+          />
+        </Box></>
     );
   });
 
@@ -796,6 +796,7 @@ const PostAnAd = () => {
                             <Box className="row">
                               <Box className="col-md-4">
                                 {featuredListsOne.map((item, index) => (
+                                  <>
                                   <Checkbox
                                     key={index}
                                     color="#E90808"
@@ -805,10 +806,12 @@ const PostAnAd = () => {
                                     checked={formDataStep2.features.includes(item.name)}
                                     onChange={() => handleFeatureChange(item.name)}
                                   />
+                                  </>
                                 ))}
                               </Box>
                               <Box className="col-md-4">
                                 {featuredListsTwo.map((item, index) => (
+                               <>
                                   <Checkbox
                                     key={index}
                                     color="#E90808"
@@ -818,10 +821,12 @@ const PostAnAd = () => {
                                     checked={formDataStep2.features.includes(item.name)}
                                     onChange={() => handleFeatureChange(item.name)}
                                   />
+                               </>
                                 ))}
                               </Box>
                               <Box className="col-md-4">
                                 {featuredListsThree.map((item, index) => (
+                                <>
                                   <Checkbox
                                     key={index}
                                     color="#E90808"
@@ -831,6 +836,7 @@ const PostAnAd = () => {
                                     checked={formDataStep2.features.includes(item.name)}
                                     onChange={() => handleFeatureChange(item.name)}
                                   />
+                                </>
                                 ))}
                               </Box>
                             </Box>
