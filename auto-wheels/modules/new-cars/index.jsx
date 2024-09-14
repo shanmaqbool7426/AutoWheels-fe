@@ -28,6 +28,7 @@ import {
 import WriteReviewModal from "@/components/ui/WriteReviewModal";
 import QuickLinks from "@/components/QuickLinks";
 import SearchBar from "./SearchBar"
+import Comments from "@/components/sections/Comments"
 import NewCarsCard from "@/components/ui/NewCarsCard"
 import { IconSearch } from "@tabler/icons-react";
 import BrowseByCategory from "@/modules/home/BrowseByCategory";
@@ -302,140 +303,11 @@ const NewCarsModule = ({ makes, bodies, popularVehicles, fetchUpComingVehicles, 
         <BrowseVideos />
         <BrowseBlogs />
 
-        <section className="latest-reviews py-5">
-          <div className="container">
-            <Card shadow="0px 4px 20px 0px #00000014" padding="xl">
-              <Title order={2} mb="lg">
-                Latest Reviews of Toyota Corolla 2024
-              </Title>
-              <Box className="give-review" my="xl">
-                <Grid>
-                  <Grid.Col span={4}>
-                    <Box>
-                      <Flex align="center" gap="xs">
-                        <Rating size={rem(42)} defaultValue={1} count={1} />
-                        <Text size={rem(42)} fw="700">
-                          4.3
-                        </Text>
-                        <Text ml="xl">
-                          Based on 601 <br /> User reviews
-                        </Text>
-                      </Flex>
-                    </Box>
-                  </Grid.Col>
-                  <Grid.Col span={4}>
-                    <Button color="#EB2321" size="lg" fullWidth onClick={openModal}>
-                      Write a Review
-                    </Button>
-                  </Grid.Col>
-                </Grid>
-              </Box>
-              <Box className="reviews-by-tags" mb="xl">
-                <Group>
-                  {/* {tagsArray.map((item, index) => {
-                    return (
-                      <Button
-                        key={index}
-                        variant={item.isSelected ? "filled" : "default"}
-                        color={item.isSelected ? "#EB2321" : "#333333"}
-                        autoContrast
-                        size="md"
-                        fw={500}
-                      >
-                        {item.name}
-                      </Button>
-                    );
-                  })} */}
-
-                  {filterOptions.map((option) => {
-                    const isSelected = filter === option.type; // Check if the current filter matches the option type
-                    return (
-                      <Button
-                        variant={isSelected ? 'filled' : 'default'} // Apply active state styles
-                        color={isSelected ? '#EB2321' : '#333333'}
-                        autoContrast
-                        size="md"
-                        fw={500}
-                        key={option.type}
-                        onClick={() => setFilter(option.type)} // Update filter state on button click
-                      >
-                        {option.label} ({counts[option.countKey]})
-                      </Button>
-                    );
-                  })}
-                </Group>
-              </Box>
-
-              <Box className="customer-reviews">
-                <Tabs defaultValue="Latest" color="#EB2321">
-                  <Tabs.List>
-                    <Tabs.Tab
-                      value="Latest"
-                      p="md"
-                      px="xl"
-                      ff="heading"
-                      fw={600}
-                    >
-                      Latest
-                    </Tabs.Tab>
-                  </Tabs.List>
-
-                  <Tabs.Panel value="Latest" py="xl">
-                    <Carousel
-                      loop
-                      withControls={true}
-                      controlsOffset="xl"
-                      controlSize={40}
-                      slideSize="33.33333%"
-                      slideGap="none"
-                      align="start"
-                      slidesToScroll={3}
-                    >
-                      {reviews?.map((review, index) => {
-                        return (
-                          <Carousel.Slide key={index}>
-                            <Card
-                              shadow="0px 4px 20px 0px rgba(0, 0, 0, 0.08)"
-                              padding="lg"
-                              m="md"
-                            >
-                              <Group mb="md">
-                                <Rating defaultValue={review?.overAllRating ?? 5} count={5} />
-                                <Text span inherit c="dimmed" size="sm">
-                                  {review?.vehicle}
-                                </Text>
-                              </Group>
-                              <Group gap={5}>
-                                <Title order={4} lineClamp={1}>
-                                  {review?.title}
-                                </Title>
-                                <Text c="dimmed" lineClamp={3}>
-                                  {review?.comment}
-                                </Text>
-                                <Anchor href="#" c="#EB2321">
-                                  Read More
-                                </Anchor>
-                              </Group>
-
-                              <Box className="review-card-footer" mt="md">
-                                <Text>By pooja kate</Text>
-                                <Text c="dimmed">{formatToMonthYear(review?.createdAt)} | 62 Views</Text>
-                              </Box>
-                            </Card>
-                          </Carousel.Slide>
-                        );
-                      })}
-                    </Carousel>
-                  </Tabs.Panel>
-                </Tabs>
-              </Box>
-            </Card>
-          </div>
-        </section>
+  <Comments/>
 
         <QuickLinks />
       </section>
-      <WriteReviewModal opened={isModalOpen} close={closeModal} />
+      {/* <WriteReviewModal opened={isModalOpen} close={closeModal} /> */}
     </>
   );
 };

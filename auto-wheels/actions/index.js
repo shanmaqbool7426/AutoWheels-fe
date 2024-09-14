@@ -6,6 +6,7 @@ import axios from 'axios';
 export const fetchMakesByTypeServer = async (type) => {
   try {
     const makes = await await fetchAPI(`${API_ENDPOINTS.MAKES}?type=${type}`);
+    console.log('makesmakesmakes',makes)
     return makes;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);

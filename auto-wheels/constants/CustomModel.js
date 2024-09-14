@@ -69,6 +69,9 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
 
   useEffect(() => {
     console.log('Current Selection:', selection);
+    ()=>{
+    return  closeModal()
+    }
   }, [selection]);
 
 
@@ -78,9 +81,11 @@ const CustomModel = ({ isOpen, onClose:closeModal  ,selection,setSelection, fetc
       <Modal
         opened={opened}
         onClose={close || closeModal}
-        withCloseButton={false}
+        withCloseButton={true}
         size="50%"
         padding={0}
+        closeOnClickOutside={false}  // Prevent modal from closing on outside click
+
       >
         <Paper
           className="search-modal-header"

@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
     },
     VEHICLES_Listing:`${BASE_URL}/api/vehicle/vehicles-listing`,
     VEHICLE_DETAIL:`${BASE_URL}/api/vehicle`,
+    VEHICLE_ADD:`${BASE_URL}/api/vehicle`,
     SIMILAR_VEHICLES:`${BASE_URL}/api/vehicle/getSimilarVehicles`,
     COMPARISONS: 'https://fakestoreapi.com/products',
     INSTANT_USED_CARS: 'https://fakestoreapi.com/products',
@@ -23,8 +24,10 @@ export const API_ENDPOINTS = {
     BROWSE_BLOGS: `${BASE_URL}/api/blog/browse-blogs`,
     TAGS:`${BASE_URL}/api/tag`,
     SIGNUP:`${BASE_URL}/api/user/register`,
+    LOGIN:`${BASE_URL}/api/user/login`,
     VERIFY_OTP:`${BASE_URL}/api/user/verify-user`,
     SUBMITREVIEW:`${BASE_URL}/api/reviews`,
-    GET_ALL_REVIEWS:`${BASE_URL}/api/reviews`
+    GET_ALL_REVIEWS:`${BASE_URL}/api/reviews`,
+    IMAGE_UPLOADS:`${BASE_URL}/upload-image`
   };
   

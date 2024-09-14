@@ -1,4 +1,30 @@
+import Link from 'next/link';
+
 const Footer = () => {
+  const makes = [
+    'Toyota',
+    'Suzuki',
+    'Honda',
+    'Daihatsu',
+    'Mitsubishi',
+    'Nissan',
+    'Mercedes',
+    'Hyundai',
+    'BMW',
+  ];
+
+  const cities = [
+    'Lahore',
+    'Karachi',
+    'Islamabad',
+    'Rawalpindi',
+    'Peshawar',
+    'Faisalabad',
+    'Multan',
+    'Gujranwala',
+    'Sialkot',
+  ];
+
   return (
     <footer className="footer">
       <div className="container">
@@ -8,85 +34,28 @@ const Footer = () => {
               <div className="col-lg-3">
                 <div className="cat-title">Cars By Make</div>
                 <ul className="list-unstyled">
-                  <li>
-                    <a href="https://flowbite.com/">Toyota Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">Suzuki Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">Honda Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">Daihatsu Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">Mitsubishi Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">Nissan Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">Mercedes Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">Hyundai Cars for Sale</a>
-                  </li>
-                  <li>
-                    <a href="https://flowbite.com/">BMW Cars for Sale</a>
-                  </li>
+                  {makes.map((make, index) => (
+                    <li key={index}>
+                      <Link href={`/listing/cars/search/-/mk_${make.toLowerCase()}`}>
+                        {make} Cars for Sale
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
+
               <div className="col-lg-3">
-                <div className="cat-title">Cars By City</div>
-                <ul className="list-unstyled">
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Lahore
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Karachi
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Islamabad
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Rawalpindi
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Peshawar
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Faisalabad
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Multan
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Gujranwala
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/themesberg/flowbite">
-                      Cars in Sialkot
-                    </a>
-                  </li>
-                </ul>
-              </div>
+      <div className="cat-title">Cars By City</div>
+      <ul className="list-unstyled">
+        {cities.map((city, index) => (
+          <li key={index}>
+            <Link href={`/listing/cars/search/-/ct_${city.toLowerCase()}`}>
+              Cars in {city}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
               <div className="col-lg-3">
                 <div className="cat-title">Explore AutoWheels</div>
                 <ul className="list-unstyled">

@@ -36,7 +36,7 @@ const BrowseByMakeAndBodies = ({ makes, bodies }) => {
                           src={item.companyImage}
                           className="mx-auto text-center"
                         />
-                        <Link href={"#"}>{item.name}</Link>
+                        <Link href={`/new/car/${item.name}`}>{item.name}</Link>
                       </Flex>
                     </div>
                   );

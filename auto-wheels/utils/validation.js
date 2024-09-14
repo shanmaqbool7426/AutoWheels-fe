@@ -4,5 +4,7 @@ export const validateSignUpForm = {
     phone: (value) => (value.trim() ? null : 'Phone number is required'),
     password: (value) => (value.length >= 6 ? null : 'Password must be at least 6 characters long'),
     confirmPassword: (value, values) => (value === values.password ? null : 'Passwords do not match'),
+    agreeToTerms: (value) =>  (value ? null : "You must agree to the terms"), // Validation for checkbox
+
   };
   

@@ -1,9 +1,55 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
+import { City } from 'country-state-city';
+import { Autocomplete } from "@mantine/core";
+import { useRouter } from "next/navigation";
 
 const SearchByLocations = () => {
+  const router = useRouter();
+
+  const [cityOptions, setCityOptions] = useState([]);
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);  // Loading state for button
+
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const handleInputChange = (input) => {
+    setQuery(input);
+
+    if (input.length > 0) {
+      const cities = City.getCitiesOfCountry('PK');
+
+      const filtered = cities
+        .filter((city) =>
+          city.name.toLowerCase().startsWith(input.toLowerCase())
+        )
+        .map((city) => city.name);
+        
+        console.log('filtered',filtered)
+        if (filtered.length==1) {
+          const cityQuery =  `/ct_${filtered[0].toLowerCase()}`;
+          console.log('cityQuery',cityQuery)
+          const searchUrl = `/listing/cars/search/-${cityQuery}`;
+          router.push(searchUrl)?.finally(() => {
+            setLoading(false);  // Reset loading state after redirect
+          });
+        }
+   
+      setCityOptions(filtered);
+    } else {
+      setCityOptions([]); // Clear the options if input is empty
+    }
+  };
+  const locations = [
+    { name: 'Karachi', slug: 'ct_karachi', image: '/locations/karachi.svg' },
+    { name: 'Islamabad', slug: 'ct_islamabad', image: '/locations/islamabad.svg' },
+    { name: 'Lahore', slug: 'ct_lahore', image: '/locations/lahore.svg' },
+    { name: 'Faisalabad', slug: 'ct_faisalabad', image: '/locations/faisalabad.svg' },
+    { name: 'Peshawar', slug: 'ct_peshawar', image: '/locations/peshawar.svg' },
+  ];
   return (
     <section className="search-by-location py-5">
       <div className="container">
@@ -20,208 +66,52 @@ const SearchByLocations = () => {
         <div className="row mt-5">
           <div className="col-lg-8">
             <div className="row">
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/karachi.svg"}
-                        width={80}
-                        height={95}
-                        alt="Karachi"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Karachi
-                        </span>
-                      </h5>
-                    </Link>
+              {locations.map((location) => (
+                <div className="col" key={location.slug}>
+                  <div className="card locations-card">
+                    <div className="card-body text-center">
+                      <Link href={`/listing/cars/search/-/${location.slug}`} className="text-decoration-none">
+                        <Image
+                          src={location.image}
+                          width={80}
+                          height={95}
+                          alt={location.name}
+                        />
+                        <h5 className="mb-0 my-3 location-info">
+                          <span className="text-muted d-block">Used cars in</span>
+                          <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
+                            {location.name}
+                          </span>
+                        </h5>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/islamabad.svg"}
-                        width={80}
-                        height={95}
-                        alt="Islamabad"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Islamabad
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/lahore.svg"}
-                        width={80}
-                        height={95}
-                        alt="Lahore"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Lahore
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/faisalabad.svg"}
-                        width={80}
-                        height={95}
-                        alt="Faisalabad"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Faisalabad
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/peshawar.svg"}
-                        width={80}
-                        height={95}
-                        alt="Peshawar"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Peshawar
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
             <div className="row">
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/karachi.svg"}
-                        width={80}
-                        height={95}
-                        alt="Karachi"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Karachi
-                        </span>
-                      </h5>
-                    </Link>
+              {locations.map((location) => (
+                <div className="col" key={location.slug}>
+                  <div className="card locations-card">
+                    <div className="card-body text-center">
+                      <Link href={`/listing/cars/search/-/${location.slug}`} className="text-decoration-none">
+                        <Image
+                          src={location.image}
+                          width={80}
+                          height={95}
+                          alt={location.name}
+                        />
+                        <h5 className="mb-0 my-3 location-info">
+                          <span className="text-muted d-block">Used cars in</span>
+                          <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
+                            {location.name}
+                          </span>
+                        </h5>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/islamabad.svg"}
-                        width={80}
-                        height={95}
-                        alt="Islamabad"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Islamabad
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/lahore.svg"}
-                        width={80}
-                        height={95}
-                        alt="Lahore"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Lahore
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/faisalabad.svg"}
-                        width={80}
-                        height={95}
-                        alt="Faisalabad"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Faisalabad
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card locations-card">
-                  <div className="card-body text-center">
-                    <Link href={"#"} className="text-decoration-none">
-                      <Image
-                        src={"/locations/peshawar.svg"}
-                        width={80}
-                        height={95}
-                        alt="Peshawar"
-                      />
-                      <h5 className="mb-0 my-3 location-info">
-                        <span className="text-muted d-block">Used cars in</span>
-                        <span className="fw-semibold mt-1 d-inline-block text-dark city-name">
-                          Peshawar
-                        </span>
-                      </h5>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
           <div className="col-lg-4">
@@ -233,10 +123,20 @@ const SearchByLocations = () => {
                 <span className="icon">
                   <FaLocationDot />
                 </span>
-                <input
+                {/* <input
                   type="text"
                   placeholder="Enter your city"
                   className="location-input form-control"
+                /> */}
+                <Autocomplete
+                  label=""
+                  placeholder="Enter your city"
+                  data={cityOptions}
+                  value={query}
+                  onChange={handleInputChange}
+                  withScrollArea={false}
+                  styles={{ dropdown: { maxHeight: 250, overflowY: 'auto' } }}
+                  mt="md"
                 />
               </div>
               <div className="locations-background">
