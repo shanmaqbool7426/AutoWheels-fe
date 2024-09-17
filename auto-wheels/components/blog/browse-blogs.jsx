@@ -75,7 +75,7 @@ const BrowseBlogs = ({ type }) => {
           </Anchor>
         </Flex>
         <Grid>
-          <Grid.Col span={{ base: 12, md: 12, lg: 6 }}>
+          <Grid.Col span={{ base: 12, md: 12, lg: 7 }}>
             <Box
               w="100%"
               h={{ base: 300, lg: "100%" }}
@@ -97,7 +97,7 @@ const BrowseBlogs = ({ type }) => {
             </Box>
           </Grid.Col>
           {remainingBlogs?.length > 0 && (
-            <Grid.Col span={{ base: 12, md: 12, lg: 6 }}>
+            <Grid.Col span={{ base: 12, md: 12, lg: 5 }}>
               {remainingBlogs.map((blog) => (
                 <article className="article-inline mb-2" key={blog._id}>
                   <Grid justify="space-between" align="stretch">
