@@ -49,11 +49,11 @@ const BrowseByType = ({ bg, pagination, vehicles: initialVehicles }) => {
             </Box>
           </Box>
           <Box className="col-lg-12">
-            <Box className="tab-content mt-4" id="pills-tabContent">
+            <Box className="tab-content" id="pills-tabContent">
               <Box className="tab-pane fade show active" id="pills-home">
                 <Box className="row">
                   {vehicles?.data?.results?.map((vehicle, index) => (
-                    <Box className="col-lg-4" key={index}>
+                    <Box className="col-lg-3" key={index}>
                       <CarCard index={index} vehicle={vehicle} />
                     </Box>
                   ))}
@@ -64,7 +64,7 @@ const BrowseByType = ({ bg, pagination, vehicles: initialVehicles }) => {
                   <Box className="tab-pane fade show active" id="pills-home">
                     <Box className="row">
                       {vehicles?.data?.map((vehicle, index) => (
-                        <Box className="col-lg-4" key={index}>
+                        <Box className="col-lg-3" key={index}>
                           <CarCard index={index} vehicle={vehicle} />
                         </Box>
                       ))}

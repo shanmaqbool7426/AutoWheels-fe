@@ -1,5 +1,5 @@
-'use client'
-import React,{useRef} from "react";
+"use client";
+import React, { useRef } from "react";
 import {
   CalendarIcon,
   CarKey,
@@ -35,29 +35,28 @@ import OfferPriceModal from "@/components/ui/OfferPrice";
 import { BsStarFill, BsStar } from "react-icons/bs";
 import { Card, Image, Title } from "@mantine/core";
 import Link from "next/link";
-import { fetchVehiclDetail } from '@/services/vehicles'
-import Calculator from "./calculator"
-import SocialCards from "./socialCards"
-import MessageToDealer from "./messageToDealer"
-import SocialContact from "./socialContact"
-import ReportAdd from "./report-add"
-import SharedFeatures from "./sharedFeatures"
-import Gellary from "./imagesGellary"
+import { fetchVehiclDetail } from "@/services/vehicles";
+import Calculator from "./calculator";
+import SocialCards from "./socialCards";
+import MessageToDealer from "./messageToDealer";
+import SocialContact from "./socialContact";
+import ReportAdd from "./report-add";
+import SharedFeatures from "./sharedFeatures";
+import Gellary from "./imagesGellary";
 import { FaCheckCircle } from "react-icons/fa";
-import {formatPrice, getTimeAgo} from "@/utils/index" 
+import { formatPrice, getTimeAgo } from "@/utils/index";
 import NextImage from "next/image";
 import { FaCalendarDays, FaClock, FaLocationDot } from "react-icons/fa6";
 import { API_ENDPOINTS } from "../../constants/api-endpoints";
-export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
+export default function vehicleDetailModule({ detail, listOfSimilarVehicles }) {
   const messageRef = useRef(null);
   const scrollToMessage = () => {
-    console.log('scrollToMessage')
-    messageRef.current.scrollIntoView({ behavior: 'smooth'  });
+    console.log("scrollToMessage");
+    messageRef.current.scrollIntoView({ behavior: "smooth" });
   };
   // const [value, setValue] = useState(50);
   // const [endValue, setEndValue] = useState(50);
   const carSummaryItems = [
-   
     {
       icon: <FuelTank />,
       label: "Engine",
@@ -134,7 +133,6 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
     },
   ];
 
-
   return (
     <>
       <section className="product-detail py-5">
@@ -168,7 +166,9 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                     </div>
                     <div className="main-title fs-1 fw-bold">{`${detail?.data?.year}  ${detail?.data?.make} ${detail?.data?.model}`}</div>
                   </div>
-                  <div className="price-field">Rs {formatPrice( detail?.data?.price)}</div>
+                  <div className="price-field">
+                    Rs {formatPrice(detail?.data?.price)}
+                  </div>
                 </div>
                 <div className="features-section">
                   <div className="text-dark d-flex gap-2 my-2">
@@ -201,7 +201,7 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
               </section>
               {/* Product Image Section */}
               <section className="product-image-section my-5">
-                <Gellary images={detail?.data?.images}/>
+                <Gellary images={detail?.data?.images} />
               </section>
               {/* Product Image Section */}
 
@@ -251,7 +251,7 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                   Sellers Notes
                 </h4>
                 <p>{detail?.data?.sellerNotes}</p>
-                <Calculator data={detail?.data}/>
+                <Calculator data={detail?.data} />
               </section>
               {/* Seller Section */}
             </div>
@@ -298,7 +298,10 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                   </div>
                 </div>
 
-                <SocialCards detail={detail} scrollToMessage={scrollToMessage}/>
+                <SocialCards
+                  detail={detail}
+                  scrollToMessage={scrollToMessage}
+                />
                 <div className="col-12">
                   <div className="card address-card mb-3">
                     <div className="card-body gap-2 align-items-center text-primary">
@@ -339,8 +342,8 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                     </div>
                   </div>
                 </div>
-          
-      <ReportAdd/>
+
+                <ReportAdd />
               </div>
             </div>
           </div>
@@ -367,7 +370,7 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                           />
                         </Card>
                       </div>
-                      <div className="col"  ref={messageRef}>
+                      <div className="col" ref={messageRef}>
                         <div className="rating">
                           <div className="fs-5 text-warning d-flex align-items-center justify-content-center">
                             <span>
@@ -385,7 +388,7 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                             <span>
                               <BsStar />
                             </span>
-                            <span className="text-dark ms-2 fs-6" >(3/5)</span>
+                            <span className="text-dark ms-2 fs-6">(3/5)</span>
                           </div>
                           <span className="d-block text-muted mt-2">
                             (Review 15)
@@ -399,8 +402,8 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                 </div>
               </div>
             </div>
-            <div className="col-md-7"  >
-              <MessageToDealer  />
+            <div className="col-md-7">
+              <MessageToDealer />
             </div>
           </div>
         </div>
@@ -419,17 +422,21 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                   <div className="card product-card">
                     <div className="product-image position-relative">
                       <div className="featured-badge">Special</div>
-                      <div className="product-price">{formatPrice(vehicle?.price)}</div>
-                    { vehicle.defaultImage &&  <Image
-                        component={NextImage}
-                        className="card-img-top object-fit-cover img-fluid"
-                        alt="Product Placeholder"
-                        width={270}
-                        height={160}
-                        src={`${vehicle.defaultImage}`}
-                      />}
+                      <div className="product-price">
+                        {formatPrice(vehicle?.price)}
+                      </div>
+                      {vehicle.defaultImage && (
+                        <Image
+                          component={NextImage}
+                          className="card-img-top object-fit-cover img-fluid"
+                          alt="Product Placeholder"
+                          width={270}
+                          height={160}
+                          src={`${vehicle.defaultImage}`}
+                        />
+                      )}
 
-{/* <Image
+                      {/* <Image
                         component={NextImage}
                         width={100}
                         height={100}
@@ -448,7 +455,8 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                           href={"#"}
                           className="d-inline-block product-title"
                         >
-                          {vehicle?.condition} {vehicle?.specifications?.engine} {vehicle?.make} {vehicle?.model}
+                          {vehicle?.condition} {vehicle?.specifications?.engine}{" "}
+                          {vehicle?.make} {vehicle?.model}
                         </Link>
                       </div>
                       <div className="product-meta">
@@ -465,7 +473,8 @@ export default  function vehicleDetailModule({detail, listOfSimilarVehicles}) {
                         </div>
                         <div className="stock-info d-flex justify-content-between align-items-center mt-2">
                           <span>
-                            <span className="text-muted">stock#</span> {vehicle?.specifications?.stockId}
+                            <span className="text-muted">stock#</span>{" "}
+                            {vehicle?.specifications?.stockId}
                           </span>
                           <span className="text-muted">
                             <FaClock /> {getTimeAgo(new Date())}
